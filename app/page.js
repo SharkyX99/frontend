@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <>
-    <h1>Mr.nuttanawat manakit</h1>
+    <h1>Mr.nuttanawat manakit (SharkyX)</h1>
     </>
   );
 }
