@@ -1,8 +1,8 @@
-import Image from "next/image";
 
-export default function Home() {
+export default function contactPage() {
   return (
-<main style={{
+    <>
+      <main style={{
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -12,7 +12,9 @@ export default function Home() {
         padding: '2rem'
       }}>
         <h1>Nuttanawat Manakit</h1>
-        <p>Home page</p>
+        <p>Contact Page</p>
       </main>
+    </>
   );
 }
+
