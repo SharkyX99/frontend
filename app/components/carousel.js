@@ -1,14 +1,15 @@
 "use client";
 import { useEffect } from "react";
-
 import Image from "next/image";
+
 export default function Carousel() {
+  useEffect(() => {
+    // ตรวจสอบว่าอยู่ใน browser หรือไม่
+    if (typeof window !== 'undefined') {
+      import("bootstrap/dist/js/bootstrap.bundle.min.js");
+    }
+  }, []);
 
-    useEffect(() => {
-        import("bootstrap/dist/js/bootstrap.bundle.min.js")
-    }, []);
-
-    
   return (
     <div
       id="carouselExample"
@@ -20,21 +21,27 @@ export default function Carousel() {
           <Image
             src="/images/sliders/1.png"
             className="d-block w-100"
-            alt="First slide" width={1920} height={690}
+            alt="First slide" 
+            width={1920} 
+            height={690}
           />
         </div>
         <div className="carousel-item">
-          <img
+          <Image
             src="/images/sliders/2.png"
             className="d-block w-100"
-            alt="Second slide" width={1920} height={690}
+            alt="Second slide" 
+            width={1920} 
+            height={690}
           />
         </div>
         <div className="carousel-item">
-          <img
+          <Image
             src="/images/sliders/3.png"
             className="d-block w-100"
-            alt="Third slide" width={1920} height={690}
+            alt="Third slide" 
+            width={1920} 
+            height={690}
           />
         </div>
       </div>
