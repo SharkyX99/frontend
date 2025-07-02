@@ -1,5 +1,5 @@
 import Carousel from "./components/carousel";
-import Card from "./components/Card"; // ✅ ตัว C ใหญ่
+import Card from "./components/Card";
 
 
 export default function Home() {
