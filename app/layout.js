@@ -3,7 +3,7 @@ import { BootstrapClient } from "./components/BootstrapClient";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navigation from "./components/navigation";
+import Navigation from './components/navigation';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

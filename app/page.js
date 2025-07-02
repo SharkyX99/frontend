@@ -1,6 +1,6 @@
 import Carousel from "./components/carousel";
 import Footer from "./components/footer"; // ✅ ตัวใหญ่ตรง Export
-import Navigation from "./components/navigation"; // ✅ N ใหญ่ตรงกัน
+import navigation from './components/navigation';
 
 export default function Home() {
   return (

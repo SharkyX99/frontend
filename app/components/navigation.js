@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 
-export default function Navigation() {
+export default function navigation() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
