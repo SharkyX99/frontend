@@ -3,7 +3,8 @@ import { BootstrapClient } from "./components/BootstrapClient";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navigation from './components/navigation';
+import Navigation from "./components/navigation";
+import Footer from "./components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +24,21 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Navigation />
-        <BootstrapClient />
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-12">
+              <Navigation />
+            </div>
+          </div>
+          <BootstrapClient />
+          {children}
+          <div className="row">
+            <div className="col-12">
+              <Footer />
+            </div>
+          </div>
+        </div>
       </body>
     </html>
   );

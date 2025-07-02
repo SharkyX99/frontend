@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useState } from "react";
 
 
-export default function navigation() {
+export default function Navigation() {  // เปลี่ยนจาก navigation() เป็น Navigation()
   const [isOpen, setIsOpen] = useState(false);
+  // ... rest of the code
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark shadow">
