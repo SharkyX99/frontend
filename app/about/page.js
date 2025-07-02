@@ -5,9 +5,9 @@ export default function AboutPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-16">
       <div className="max-w-3xl bg-white rounded-xl shadow-md p-10 text-center">
         {/* รูปโปรไฟล์ */}
-        <div className="mx-auto w-32 h-32 rounded-full overflow-hidden mb-6 shadow-lg">
+        <div className="mx-auto w-32 h-32 rounded-full overflow-hidden mb-6 shadow-xl border-4 border-indigo-500 bg-white">
           <img
-            src="https://i.pravatar.cc/300"
+            src="/images/sliders/image.png"
             alt="Profile"
             className="w-full h-full object-cover"
           />
@@ -15,7 +15,7 @@ export default function AboutPage() {
 
         {/* ชื่อ */}
         <h1 className="text-4xl font-semibold mb-3 text-gray-800">Nuttanawat Manakit</h1>
-        <h2>(WA)</h2>
+        <h2 className="text-gray-500 mb-6">(WA)</h2>
 
         {/* ตำแหน่ง */}
         <p className="text-indigo-600 font-medium mb-6">Full Stack Developer & UI/UX Designer</p>
