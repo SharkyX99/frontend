@@ -37,10 +37,11 @@ export default function Navigation() {
               <Link href="/about" className="nav-link">
                 About
               </Link>
+              
             </li>
             <li className="nav-item">
-              <Link href="/services" className="nav-link">
-                Services
+              <Link href="/service" className="nav-link">
+                Service
               </Link>
             </li>
             <li className="nav-item">

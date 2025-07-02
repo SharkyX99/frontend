@@ -13,6 +13,12 @@ export default function contactPage() {
       }}>
         <h1>Nuttanawat Manakit</h1>
         <p>Contact Page</p>
+        <h1>Phone Number</h1>
+        <h2>095-630-6933</h2>
+        <h1>Facebook</h1>
+        <h2>Thuchy Nmk</h2>
+        <h1>Instagram</h1>
+        <h2>Thuchy Nmk</h2>
       </main>
     </>
   );
