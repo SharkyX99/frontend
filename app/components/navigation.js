@@ -5,9 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 
-export default function Navigation() {  // เปลี่ยนจาก navigation() เป็น Navigation()
+export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  // ... rest of the code
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark shadow">
@@ -35,17 +34,17 @@ export default function Navigation() {  // เปลี่ยนจาก naviga
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="/about/page.js" className="nav-link">
+              <Link href="/about" className="nav-link">
                 About
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="/services/page.js" className="nav-link">
+              <Link href="/services" className="nav-link">
                 Services
               </Link>
             </li>
             <li className="nav-item">
-              <Link href="/contact/page.js" className="nav-link">
+              <Link href="/contact" className="nav-link">
                 Contact
               </Link>
             </li>

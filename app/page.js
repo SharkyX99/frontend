@@ -1,5 +1,5 @@
 import Carousel from "./components/carousel";
-import Card from "./components/Card";
+import Card from "./components/Card"; // Make sure this matches your actual filename
 
 
 export default function Home() {
