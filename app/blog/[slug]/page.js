@@ -1,22 +1,15 @@
-import Navigation from '../../../components/Navigation';
+// เอาบรรทัดนี้ออก
+// import Navigation from '../../../components/Navigation';
 
-export default function AboutPage() {
+// เหลือแค่ components อื่น ๆ ที่จำเป็น
+export default function BlogPost({ params }) {
   return (
-    <>
-      <Navigation />
-      <main style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '80vh',
-        textAlign: 'center',
-        padding: '2rem'
-      }}>
-        <h1>เกี่ยวกับ Nuttanawat Manakit</h1>
-        <p>สวัสดีครับ ผมชื่อ Nuttanawat หรือ Shar นักพัฒนาเว็บด้วย Next.js...</p>
-      </main>
-    </>
+    <div className="row">
+      <div className="col-12">
+        {/* เนื้อหาของ blog post */}
+        <h1>Blog Post: {params.slug}</h1>
+        <p>This is the blog post content.</p>
+      </div>
+    </div>
   );
 }
-
