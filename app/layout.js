@@ -1,19 +1,17 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BootstrapClient } from "./components/BootstrapClient";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
+import { Prompt } from "next/font/google";
+import { BootstrapClient } from "./components/BootstrapClient";
 import Navigation from "./components/navigation";
 import Footer from "./components/footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const prompt = Prompt({
+  subsets: ["latin", "thai"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-prompt",
+  display: "swap",
 });
 
 export const metadata = {
@@ -23,23 +21,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-12">
-              <Navigation />
-            </div>
-          </div>
-          <BootstrapClient />
-          {children}
-          <div className="row">
-            <div className="col-12">
-              <Footer />
-            </div>
-          </div>
+    <html lang="th" className={prompt.variable}>
+      <body className="antialiased" style={{ fontFamily: "var(--font-prompt)" }}>
+        <div className="container-fluid min-vh-100 d-flex flex-column">
+          <Navigation />
+          <main className="flex-grow-1">
+            <BootstrapClient />
+            {children}
+          </main>
+          <Footer />
         </div>
       </body>
     </html>
   );
 }
+
