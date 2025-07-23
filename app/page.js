@@ -1,6 +1,179 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+// Carousel component integrated directly
+function Carousel() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [
+    {
+      src: "/images/sliders/1.png",
+      alt: "First slide"
+    },
+    {
+      src: "/images/sliders/2.png", 
+      alt: "Second slide"
+    },
+    {
+      src: "/images/sliders/3.png",
+      alt: "Third slide"
+    }
+  ];
+
+  // Auto-slide functionality
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [slides.length]);
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  return (
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      height: '400px',
+      overflow: 'hidden',
+      borderRadius: '20px'
+    }}>
+      {/* Slides */}
+      <div style={{
+        display: 'flex',
+        width: `${slides.length * 100}%`,
+        height: '100%',
+        transform: `translateX(-${currentSlide * (100 / slides.length)}%)`,
+        transition: 'transform 0.5s ease-in-out'
+      }}>
+        {slides.map((slide, index) => (
+          <div key={index} style={{
+            width: `${100 / slides.length}%`,
+            height: '100%',
+            position: 'relative'
+          }}>
+            <img
+              src={slide.src}
+              alt={slide.alt}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        style={{
+          position: 'absolute',
+          left: '20px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          background: 'rgba(0, 0, 0, 0.5)',
+          border: 'none',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          color: 'white',
+          cursor: 'pointer',
+          fontSize: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.3s ease',
+          backdropFilter: 'blur(10px)'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+        }}
+      >
+        &#8249;
+      </button>
+
+      <button
+        onClick={nextSlide}
+        style={{
+          position: 'absolute',
+          right: '20px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          background: 'rgba(0, 0, 0, 0.5)',
+          border: 'none',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          color: 'white',
+          cursor: 'pointer',
+          fontSize: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.3s ease',
+          backdropFilter: 'blur(10px)'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+        }}
+      >
+        &#8250;
+      </button>
+
+      {/* Dots Indicators */}
+      <div style={{
+        position: 'absolute',
+        bottom: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        gap: '10px'
+      }}>
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            style={{
+              width: '12px',
+              height: '12px',
+              borderRadius: '50%',
+              border: 'none',
+              background: currentSlide === index 
+                ? 'linear-gradient(135deg, #ff6b6b, #feca57)' 
+                : 'rgba(255, 255, 255, 0.5)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              transform: currentSlide === index ? 'scale(1.2)' : 'scale(1)'
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -60,7 +233,6 @@ export default function Home() {
       category: "Super GT",
       specs: "800 HP • 0-100 km/h: 2.8s"
     },
-  
   ];
 
   return (
@@ -181,7 +353,7 @@ export default function Home() {
               e.currentTarget.style.boxShadow = '0 10px 30px rgba(255, 107, 107, 0.3)';
             }}
             onClick={() => {
-              document.getElementById('cars-section').scrollIntoView({ behavior: 'smooth' });
+              document.getElementById('carousel-section').scrollIntoView({ behavior: 'smooth' });
             }}
           >
             🏎️ Explore Collection
@@ -215,6 +387,50 @@ export default function Home() {
               animation: 'scroll 2s infinite'
             }}></div>
           </div>
+        </div>
+      </div>
+
+      {/* Carousel Section - NEW ADDITION */}
+      <div id="carousel-section" style={{
+        padding: '4rem 0',
+        background: 'rgba(0, 0, 0, 0.2)',
+        backdropFilter: 'blur(10px)'
+      }}>
+        <div style={{
+          textAlign: 'center',
+          marginBottom: '3rem',
+          padding: '0 2rem'
+        }}>
+          <h2 style={{
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
+            marginBottom: '1rem',
+            background: 'linear-gradient(135deg, #feca57, #ff6b6b)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            Work gallery
+          </h2>
+          <p style={{
+            fontSize: '1.1rem',
+            opacity: 0.8,
+            maxWidth: '500px',
+            margin: '0 auto'
+          }}>
+            Experience our premium showcase in motion
+          </p>
+        </div>
+        
+        {/* Carousel Container with styling to match the theme */}
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 2rem',
+          borderRadius: '20px',
+          overflow: 'hidden',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+        }}>
+          <Carousel />
         </div>
       </div>
 
