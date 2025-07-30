@@ -1,79 +1,61 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import { useState } from 'react'
+import { useAuth } from "../context/AuthContext"
+import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Navigation() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+  const { user, isAdmin } = useAuth() // ดึง user ด้วย
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark shadow">
       <div className="container-fluid">
-        {/* Logo */}
         <Link href="/" className="navbar-brand">
           <Image src="/images/sliders/logo.jpg" alt="Logo" width={40} height={40} />
         </Link>
 
-        {/* Toggle Button for mobile */}
         <button
           className="navbar-toggler"
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          aria-controls="navbarNav"
-          aria-expanded={isOpen}
-          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Navbar Links */}
-        <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`} id="navbarNav">
+        <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            {/* Home */}
-            <li className="nav-item">
-              <Link href="/" className="nav-link">
-                Home
-              </Link>
-            </li>
+            <li className="nav-item"><Link href="/" className="nav-link">Home</Link></li>
+            <li className="nav-item"><Link href="/about" className="nav-link">About</Link></li>
+            <li className="nav-item"><Link href="/service" className="nav-link">Service</Link></li>
+            <li className="nav-item"><Link href="/contact" className="nav-link">Contact</Link></li>
 
-            {/* About */}
-            <li className="nav-item">
-              <Link href="/about" className="nav-link">
-                About
-              </Link>
-            </li>
+            {user && isAdmin && (
+              <li className="nav-item">
+                <Link href="/admin/users" className="nav-link btn btn-warning ms-3 px-3 py-1">
+                  Admin
+                </Link>
+              </li>
+            )}
 
-            {/* Service */}
-            <li className="nav-item">
-              <Link href="/service" className="nav-link">
-                Service
-              </Link>
-            </li>
-
-            {/* Contact */}
-            <li className="nav-item">
-              <Link href="/contact" className="nav-link">
-                Contact
-              </Link>
-            </li>
-
-            {/* Login Button */}
-            <li className="nav-item">
-              <Link href="/login" className="nav-link btn btn-outline-light ms-3 px-3 py-1">
-                Login
-              </Link>
-            </li>
-
-            {/* Register Button */}
-            <li className="nav-item">
-              <Link href="/register" className="nav-link btn btn-outline-success ms-2 px-3 py-1">
-                Register
-              </Link>
-            </li>
+            {!user && (
+              <>
+                <li className="nav-item">
+                  <Link href="/login" className="nav-link btn btn-outline-light ms-3 px-3 py-1">
+                    Login
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link href="/register" className="nav-link btn btn-outline-success ms-2 px-3 py-1">
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
     </nav>
-  );
+  )
 }

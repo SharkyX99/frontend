@@ -6,6 +6,8 @@ import { Prompt } from "next/font/google";
 import { BootstrapClient } from "./components/BootstrapClient";
 import Navigation from "./components/navigation";
 import Footer from "./components/footer";
+import { AuthProvider } from "./context/AuthContext";
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 const prompt = Prompt({
   subsets: ["latin", "thai"],
@@ -23,16 +25,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="th" className={prompt.variable}>
       <body className="antialiased" style={{ fontFamily: "var(--font-prompt)" }}>
-        <div className="container-fluid min-vh-100 d-flex flex-column">
-          <Navigation />
-          <main className="flex-grow-1">
-            <BootstrapClient />
-            {children}
-          </main>
-          <Footer />
-        </div>
+        <AuthProvider>
+          <div className="container-fluid min-vh-100 d-flex flex-column">
+            <Navigation />
+            <main className="flex-grow-1">
+              <BootstrapClient />
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
 }
-
