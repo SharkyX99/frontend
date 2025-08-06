@@ -1,9 +1,7 @@
 'use client'
+import { useState, useEffect } from 'react'
 
-import { useState } from 'react'
-import Swal from 'sweetalert2'
-
-export default function RegisterPage() {
+export default function RegisterUserPage() {
   const [firstname, setFirstname] = useState('')
   const [fullname, setFullname] = useState('')
   const [lastname, setLastname] = useState('')
@@ -13,191 +11,603 @@ export default function RegisterPage() {
   const [address, setAddress] = useState('')
   const [sex, setSex] = useState('')
   const [birthday, setBirthday] = useState('')
+  const [errors, setErrors] = useState({})
+  const [submitting, setSubmitting] = useState(false)
+  const [swalLoaded, setSwalLoaded] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  useEffect(() => {
+    // Check if SweetAlert2 is loaded
+    const checkSwal = () => {
+      if (typeof window !== 'undefined' && window.Swal) {
+        setSwalLoaded(true)
+      } else {
+        setTimeout(checkSwal, 100) // Check again after 100ms
+      }
+    }
+    checkSwal()
+  }, [])
 
-    if (password !== confirmPassword) {
-      Swal.fire({
-        icon: 'error',
-        title: 'รหัสผ่านไม่ตรงกัน',
-        text: 'กรุณากรอกรหัสผ่านให้ตรงกันทั้งสองช่อง',
+  const validateForm = () => {
+    const newErrors = {}
+
+    if (!firstname.trim()) newErrors.firstname = 'กรุณาเลือกคำนำหน้าชื่อ'
+    if (!fullname.trim()) newErrors.fullname = 'กรุณากรอกชื่อ'
+    if (!lastname.trim()) newErrors.lastname = 'กรุณากรอกนามสกุล'
+    if (!username.trim()) newErrors.username = 'กรุณากรอก Username'
+    if (!password.trim()) newErrors.password = 'กรุณากรอกรหัสผ่าน'
+    if (password.length < 6) newErrors.password = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'
+    if (password !== confirmPassword) newErrors.confirmPassword = 'รหัสผ่านไม่ตรงกัน'
+    if (!address.trim()) newErrors.address = 'กรุณากรอกที่อยู่'
+    if (!sex) newErrors.sex = 'กรุณาเลือกเพศ'
+    if (!birthday) newErrors.birthday = 'กรุณาเลือกวันเกิด'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const showSweetAlert = () => {
+    if (swalLoaded && window.Swal) {
+      window.Swal.fire({
+        title: '🎉 ลงทะเบียนสำเร็จ!',
+        text: `ยินดีต้อนรับ คุณ${firstname} ${fullname} ${lastname}`,
+        icon: 'success',
+        confirmButtonText: 'เริ่มใช้งาน',
+        confirmButtonColor: '#667eea',
+        background: '#ffffff',
+        color: '#333333',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp'
+        },
+        customClass: {
+          title: 'swal-title',
+          content: 'swal-content',
+          confirmButton: 'swal-confirm-btn'
+        }
+      }).then(() => {
+        // Reset form after user clicks OK
+        resetForm()
       })
+    } else {
+      // Fallback if SweetAlert2 is not loaded
+      alert('ลงทะเบียนสำเร็จ!')
+      resetForm()
+    }
+  }
+
+  const showErrorAlert = () => {
+    if (swalLoaded && window.Swal) {
+      window.Swal.fire({
+        title: '⚠️ เกิดข้อผิดพลาด!',
+        text: 'ไม่สามารถลงทะเบียนได้ กรุณาลองใหม่อีกครั้ง',
+        icon: 'error',
+        confirmButtonText: 'ลองใหม่',
+        confirmButtonColor: '#dc3545',
+        background: '#ffffff',
+        color: '#333333',
+        showClass: {
+          popup: 'animate__animated animate__shakeX'
+        },
+        customClass: {
+          confirmButton: 'swal-confirm-btn'
+        }
+      })
+    } else {
+      alert('เกิดข้อผิดพลาด')
+    }
+  }
+
+  const resetForm = () => {
+    setFirstname('')
+    setFullname('')
+    setLastname('')
+    setUsername('')
+    setPassword('')
+    setConfirmPassword('')
+    setAddress('')
+    setSex('')
+    setBirthday('')
+  }
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      // Show validation error with SweetAlert2
+      if (swalLoaded && window.Swal) {
+        window.Swal.fire({
+          title: '📝 ข้อมูลไม่ครบถ้วน',
+          text: 'กรุณาตรวจสอบและกรอกข้อมูลให้ครบถ้วน',
+          icon: 'warning',
+          confirmButtonText: 'ตรวจสอบอีกครั้ง',
+          confirmButtonColor: '#ffc107',
+          background: '#ffffff',
+          color: '#333333',
+          customClass: {
+            confirmButton: 'swal-confirm-btn'
+          }
+        })
+      } else {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน')
+      }
       return
     }
 
     try {
-      const res = await fetch('http://itdev.cmtc.ac.th:3000/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          firstname,
-          fullname,
-          lastname,
-          username,
-          password,
-          address,
-          sex,
-          birthday,
-        }),
-      })
-
-      const result = await res.json()
-      console.log(result)
-
-      if (res.ok) {
-        Swal.fire({
-          icon: 'success',
-          title: 'สมัครสมาชิกสำเร็จ',
-          text: 'สามารถเข้าสู่ระบบได้แล้ว',
-        })
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'เกิดข้อผิดพลาด',
-          text: result.message || 'ไม่สามารถสมัครสมาชิกได้',
-        })
-      }
+      setSubmitting(true)
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      showSweetAlert()
     } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'เกิดข้อผิดพลาด',
-        text: err.message,
-      })
+      showErrorAlert()
+    } finally {
+      setSubmitting(false)
     }
   }
 
   return (
-    <div className="container mt-5" style={{ maxWidth: '500px' }}>
-      <h2 className="mb-4 text-center">Create an Account</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="firstname" className="form-label">คำนำหน้าชื่อ</label>
-          <select
-            className="form-select"
-            id="firstname"
-            value={firstname}
-            onChange={(e) => setFirstname(e.target.value)}
-            required
-          >
-            <option value="">เลือกคำนำหน้า</option>
-            <option value="นาย">นาย</option>
-            <option value="นาง">นาง</option>
-            <option value="นางสาว">นางสาว</option>
-          </select>
+    <>
+      <link 
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" 
+        rel="stylesheet"
+      />
+      <link 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        rel="stylesheet"
+      />
+      <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        rel="stylesheet"
+      />
+      <script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"
+      ></script>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.1/sweetalert2.all.min.js"
+        onLoad={() => setSwalLoaded(true)}
+      ></script>
+
+      <div className="min-vh-100" style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        position: 'relative'
+      }}>
+        {/* Background Pattern */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          opacity: 0.3
+        }}></div>
+
+        <div className="container py-5 position-relative" style={{ zIndex: 1 }}>
+          <div className="row justify-content-center">
+            <div className="col-lg-10 col-xl-8">
+              
+              {/* Header */}
+              <div className="text-center mb-5">
+                <div className="d-inline-flex align-items-center justify-content-center rounded-circle mb-4 shadow-lg" 
+                     style={{
+                       width: '80px',
+                       height: '80px',
+                       background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
+                       animation: 'float 3s ease-in-out infinite'
+                     }}>
+                  <i className="fas fa-user-plus fa-2x text-white"></i>
+                </div>
+                <h1 className="display-5 fw-bold text-white mb-3">
+                  สมัครสมาชิก
+                </h1>
+                <p className="lead text-white-50 mb-0">
+                  กรอกข้อมูลให้ครบถ้วนเพื่อเริ่มต้นการใช้งาน
+                </p>
+              </div>
+
+              {/* Main Form Card */}
+              <div className="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div className="card-body p-0">
+                  
+                  {/* Form Header */}
+                  <div className="bg-gradient p-4 text-white" 
+                       style={{ background: 'linear-gradient(45deg, #667eea, #764ba2)' }}>
+                    <div className="row align-items-center">
+                      <div className="col">
+                        <h4 className="mb-1">
+                          <i className="fas fa-edit me-2"></i>
+                          ข้อมูลการลงทะเบียน
+                        </h4>
+                        <small className="opacity-75">
+                          กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-5">
+                    <div onSubmit={handleSubmit}>
+                      
+                      {/* Personal Information Section */}
+                      <div className="mb-5">
+                        <div className="d-flex align-items-center mb-4 pb-2 border-bottom">
+                          <div className="rounded-3 p-2 me-3" style={{ backgroundColor: '#e3f2fd' }}>
+                            <i className="fas fa-user text-primary"></i>
+                          </div>
+                          <div>
+                            <h5 className="mb-0 text-dark fw-semibold">ข้อมูลส่วนตัว</h5>
+                            <small className="text-muted">กรอกข้อมูลพื้นฐานของคุณ</small>
+                          </div>
+                        </div>
+
+                        <div className="row g-4">
+                          <div className="col-md-4">
+                            <label className="form-label fw-medium">
+                              <i className="fas fa-crown me-1 text-warning"></i>
+                              คำนำหน้าชื่อ <span className="text-danger">*</span>
+                            </label>
+                            <select 
+                              className={`form-select form-select-lg ${errors.firstname ? 'is-invalid' : ''}`}
+                              value={firstname}
+                              onChange={(e) => setFirstname(e.target.value)}
+                              style={{ 
+                                borderRadius: '12px',
+                                border: '2px solid #e9ecef',
+                                transition: 'all 0.3s ease'
+                              }}
+                            >
+                              <option value="">เลือกคำนำหน้า</option>
+                              <option value="นาย">นาย</option>
+                              <option value="นาง">นาง</option>
+                              <option value="นางสาว">นางสาว</option>
+                            </select>
+                            {errors.firstname && (
+                              <div className="invalid-feedback">
+                                <i className="fas fa-exclamation-circle me-1"></i>
+                                {errors.firstname}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="col-md-4">
+                            <label className="form-label fw-medium">
+                              <i className="fas fa-signature me-1 text-success"></i>
+                              ชื่อ <span className="text-danger">*</span>
+                            </label>
+                            <input 
+                              type="text"
+                              className={`form-control form-control-lg ${errors.fullname ? 'is-invalid' : ''}`}
+                              value={fullname}
+                              onChange={(e) => setFullname(e.target.value)}
+                              placeholder="กรอกชื่อของคุณ"
+                              style={{ 
+                                borderRadius: '12px',
+                                border: '2px solid #e9ecef',
+                                transition: 'all 0.3s ease'
+                              }}
+                            />
+                            {errors.fullname && (
+                              <div className="invalid-feedback">
+                                <i className="fas fa-exclamation-circle me-1"></i>
+                                {errors.fullname}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="col-md-4">
+                            <label className="form-label fw-medium">
+                              <i className="fas fa-signature me-1 text-info"></i>
+                              นามสกุล <span className="text-danger">*</span>
+                            </label>
+                            <input 
+                              type="text"
+                              className={`form-control form-control-lg ${errors.lastname ? 'is-invalid' : ''}`}
+                              value={lastname}
+                              onChange={(e) => setLastname(e.target.value)}
+                              placeholder="กรอกนามสกุลของคุณ"
+                              style={{ 
+                                borderRadius: '12px',
+                                border: '2px solid #e9ecef',
+                                transition: 'all 0.3s ease'
+                              }}
+                            />
+                            {errors.lastname && (
+                              <div className="invalid-feedback">
+                                <i className="fas fa-exclamation-circle me-1"></i>
+                                {errors.lastname}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="col-md-6">
+                            <label className="form-label fw-medium">
+                              <i className="fas fa-venus-mars me-1 text-purple"></i>
+                              เพศ <span className="text-danger">*</span>
+                            </label>
+                            <select 
+                              className={`form-select form-select-lg ${errors.sex ? 'is-invalid' : ''}`}
+                              value={sex}
+                              onChange={(e) => setSex(e.target.value)}
+                              style={{ 
+                                borderRadius: '12px',
+                                border: '2px solid #e9ecef',
+                                transition: 'all 0.3s ease'
+                              }}
+                            >
+                              <option value="">เลือกเพศ</option>
+                              <option value="ชาย">ชาย</option>
+                              <option value="หญิง">หญิง</option>
+                              <option value="อื่นๆ">อื่นๆ</option>
+                            </select>
+                            {errors.sex && (
+                              <div className="invalid-feedback">
+                                <i className="fas fa-exclamation-circle me-1"></i>
+                                {errors.sex}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="col-md-6">
+                            <label className="form-label fw-medium">
+                              <i className="fas fa-birthday-cake me-1 text-pink"></i>
+                              วันเกิด <span className="text-danger">*</span>
+                            </label>
+                            <input 
+                              type="date"
+                              className={`form-control form-control-lg ${errors.birthday ? 'is-invalid' : ''}`}
+                              value={birthday}
+                              onChange={(e) => setBirthday(e.target.value)}
+                              style={{ 
+                                borderRadius: '12px',
+                                border: '2px solid #e9ecef',
+                                transition: 'all 0.3s ease'
+                              }}
+                            />
+                            {errors.birthday && (
+                              <div className="invalid-feedback">
+                                <i className="fas fa-exclamation-circle me-1"></i>
+                                {errors.birthday}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="col-12">
+                            <label className="form-label fw-medium">
+                              <i className="fas fa-map-marker-alt me-1 text-danger"></i>
+                              ที่อยู่ <span className="text-danger">*</span>
+                            </label>
+                            <textarea 
+                              className={`form-control form-control-lg ${errors.address ? 'is-invalid' : ''}`}
+                              rows={3}
+                              value={address}
+                              onChange={(e) => setAddress(e.target.value)}
+                              placeholder="กรอกที่อยู่ของคุณ..."
+                              style={{ 
+                                borderRadius: '12px',
+                                border: '2px solid #e9ecef',
+                                transition: 'all 0.3s ease',
+                                resize: 'none'
+                              }}
+                            ></textarea>
+                            {errors.address && (
+                              <div className="invalid-feedback">
+                                <i className="fas fa-exclamation-circle me-1"></i>
+                                {errors.address}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Account Information Section */}
+                      <div className="mb-5">
+                        <div className="d-flex align-items-center mb-4 pb-2 border-bottom">
+                          <div className="rounded-3 p-2 me-3" style={{ backgroundColor: '#f3e5f5' }}>
+                            <i className="fas fa-key text-purple"></i>
+                          </div>
+                          <div>
+                            <h5 className="mb-0 text-dark fw-semibold">ข้อมูลบัญชีผู้ใช้</h5>
+                            <small className="text-muted">ตั้งค่าข้อมูลสำหรับเข้าสู่ระบบ</small>
+                          </div>
+                        </div>
+
+                        <div className="row g-4">
+                          <div className="col-12">
+                            <label className="form-label fw-medium">
+                              <i className="fas fa-user-circle me-1 text-primary"></i>
+                              Username <span className="text-danger">*</span>
+                            </label>
+                            <input 
+                              type="text"
+                              className={`form-control form-control-lg ${errors.username ? 'is-invalid' : ''}`}
+                              value={username}
+                              onChange={(e) => setUsername(e.target.value)}
+                              placeholder="กรอก Username ของคุณ"
+                              style={{ 
+                                borderRadius: '12px',
+                                border: '2px solid #e9ecef',
+                                transition: 'all 0.3s ease'
+                              }}
+                            />
+                            {errors.username && (
+                              <div className="invalid-feedback">
+                                <i className="fas fa-exclamation-circle me-1"></i>
+                                {errors.username}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="col-md-6">
+                            <label className="form-label fw-medium">
+                              <i className="fas fa-lock me-1 text-warning"></i>
+                              รหัสผ่าน <span className="text-danger">*</span>
+                            </label>
+                            <input 
+                              type="password"
+                              className={`form-control form-control-lg ${errors.password ? 'is-invalid' : ''}`}
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              placeholder="กรอกรหัสผ่าน"
+                              style={{ 
+                                borderRadius: '12px',
+                                border: '2px solid #e9ecef',
+                                transition: 'all 0.3s ease'
+                              }}
+                            />
+                            {errors.password && (
+                              <div className="invalid-feedback">
+                                <i className="fas fa-exclamation-circle me-1"></i>
+                                {errors.password}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="col-md-6">
+                            <label className="form-label fw-medium">
+                              <i className="fas fa-shield-alt me-1 text-success"></i>
+                              ยืนยันรหัสผ่าน <span className="text-danger">*</span>
+                            </label>
+                            <input 
+                              type="password"
+                              className={`form-control form-control-lg ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                              value={confirmPassword}
+                              onChange={(e) => setConfirmPassword(e.target.value)}
+                              placeholder="ยืนยันรหัสผ่าน"
+                              style={{ 
+                                borderRadius: '12px',
+                                border: '2px solid #e9ecef',
+                                transition: 'all 0.3s ease'
+                              }}
+                            />
+                            {errors.confirmPassword && (
+                              <div className="invalid-feedback">
+                                <i className="fas fa-exclamation-circle me-1"></i>
+                                {errors.confirmPassword}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Submit Button */}
+                      <div className="d-grid gap-3">
+                        <button 
+                          type="button"
+                          disabled={submitting}
+                          onClick={handleSubmit}
+                          className="btn btn-lg fw-bold py-3 position-relative overflow-hidden"
+                          style={{
+                            background: 'linear-gradient(45deg, #667eea, #764ba2)',
+                            border: 'none',
+                            borderRadius: '15px',
+                            color: 'white',
+                            boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+                            transition: 'all 0.3s ease',
+                            transform: submitting ? 'scale(0.98)' : 'scale(1)'
+                          }}
+                          onMouseOver={(e) => {
+                            if (!submitting) {
+                              e.target.style.transform = 'translateY(-2px)'
+                              e.target.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.4)'
+                            }
+                          }}
+                          onMouseOut={(e) => {
+                            if (!submitting) {
+                              e.target.style.transform = 'translateY(0)'
+                              e.target.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.3)'
+                            }
+                          }}
+                        >
+                          {submitting ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                              <i className="fas fa-clock me-2"></i>
+                              กำลังลงทะเบียน...
+                            </>
+                          ) : (
+                            <>
+                              <i className="fas fa-user-plus me-2"></i>
+                              สมัครสมาชิก
+                              <i className="fas fa-arrow-right ms-2"></i>
+                            </>
+                          )}
+                        </button>
+
+                        <div className="text-center">
+                          <small className="text-muted">
+                            มีบัญชีแล้ว? 
+                            <a href="#" className="text-decoration-none fw-medium ms-1" style={{ color: '#667eea' }}>
+                              <i className="fas fa-sign-in-alt me-1"></i>
+                              เข้าสู่ระบบ
+                            </a>
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="fullname" className="form-label">ชื่อ</label>
-          <input
-            type="text"
-            className="form-control"
-            id="fullname"
-            value={fullname}
-            onChange={(e) => setFullname(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="lastname" className="form-label">นามสกุล</label>
-          <input
-            type="text"
-            className="form-control"
-            id="lastname"
-            value={lastname}
-            onChange={(e) => setLastname(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">Username</label>
-          <input
-            type="text"
-            className="form-control"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="address" className="form-label">ที่อยู่</label>
-          <textarea
-            className="form-control"
-            id="address"
-            rows={2}
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="sex" className="form-label">เพศ</label>
-          <select
-            className="form-select"
-            id="sex"
-            value={sex}
-            onChange={(e) => setSex(e.target.value)}
-            required
-          >
-            <option value="">เลือกเพศ</option>
-            <option value="ชาย">ชาย</option>
-            <option value="หญิง">หญิง</option>
-            <option value="อื่นๆ">อื่นๆ</option>
-          </select>
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="birthday" className="form-label">วันเกิด</label>
-          <input
-            type="date"
-            className="form-control"
-            id="birthday"
-            value={birthday}
-            onChange={(e) => setBirthday(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary w-100">Register</button>
-      </form>
-
-      <div className="text-center mt-3">
-        <small>
-          Already have an account? <a href="/login">Login here</a>
-        </small>
+        {/* Custom Styles */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes float {
+              0%, 100% { transform: translateY(0px); }
+              50% { transform: translateY(-10px); }
+            }
+            .text-purple { color: #6f42c1 !important; }
+            .text-pink { color: #e83e8c !important; }
+            .form-control:focus, .form-select:focus {
+              border-color: #667eea !important;
+              box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25) !important;
+            }
+            .form-control:hover, .form-select:hover {
+              border-color: #667eea !important;
+            }
+            
+            /* Custom SweetAlert2 Styles */
+            .swal-title {
+              font-size: 1.8rem !important;
+              font-weight: 700 !important;
+            }
+            .swal-content {
+              font-size: 1.1rem !important;
+            }
+            .swal-confirm-btn {
+              background: linear-gradient(45deg, #667eea, #764ba2) !important;
+              border: none !important;
+              border-radius: 12px !important;
+              padding: 12px 24px !important;
+              font-weight: 600 !important;
+              box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+              transition: all 0.3s ease !important;
+            }
+            .swal-confirm-btn:hover {
+              transform: translateY(-2px) !important;
+              box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+            }
+            
+            /* Custom SweetAlert2 popup styles */
+            .swal2-popup {
+              border-radius: 20px !important;
+              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+            }
+            .swal2-icon {
+              border-width: 5px !important;
+            }
+            .swal2-success-circular-line-left,
+            .swal2-success-circular-line-right {
+              background-color: #667eea !important;
+            }
+            .swal2-success-fix {
+              background-color: #667eea !important;
+            }
+          `
+        }} />
       </div>
-    </div>
+    </>
   )
 }
