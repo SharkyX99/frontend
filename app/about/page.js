@@ -68,8 +68,8 @@ export default function AboutPage() {
               marginBottom: '2rem'
             }}>
               <div style={{
-                width: '200px',
-                height: '200px',
+                width: '320px',
+                height: '320px',
                 borderRadius: '50%',
                 overflow: 'hidden',
                 border: '6px solid rgba(255, 255, 255, 0.3)',
@@ -92,8 +92,8 @@ export default function AboutPage() {
                 top: '-10px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                width: '220px',
-                height: '220px',
+                width: '330px',
+                height: '330px',
                 border: '2px solid rgba(255, 255, 255, 0.2)',
                 borderRadius: '50%',
                 animation: 'pulse 3s infinite'
@@ -147,7 +147,7 @@ export default function AboutPage() {
               marginBottom: '1.5rem',
               fontFamily: 'system-ui, -apple-system, sans-serif'
             }}>
-              เกี่ยวกับฉัน
+              About Me!!!!!
             </h3>
             <p style={{
               color: '#374151',
