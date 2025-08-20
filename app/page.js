@@ -7,17 +7,26 @@ function Carousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     {
-      src: "/images/sliders/1.png",
+      src: "/images/sliders/1.jpg",
       alt: "First slide"
     },
     {
-      src: "/images/sliders/2.png", 
+      src: "/images/sliders/2.jpg", 
       alt: "Second slide"
     },
     {
-      src: "/images/sliders/3.png",
+      src: "/images/sliders/3.jpg",
       alt: "Third slide"
-    }
+    },
+    {
+      src: "/images/sliders/4.jpg", 
+      alt: "Second slide"
+    },
+    {
+      src: "/images/sliders/5.jpg", 
+      alt: "Second slide"
+    },
+    
   ];
 
   // Auto-slide functionality
@@ -299,7 +308,7 @@ export default function Home() {
               textShadow: '0 0 50px rgba(255, 107, 107, 0.3)',
               animation: 'glow 3s ease-in-out infinite alternate'
             }}>
-              Nuttanawat Manakit
+              Welcome to My World
             </h1>
             <div style={{
               position: 'absolute',
