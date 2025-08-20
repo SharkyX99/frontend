@@ -44,6 +44,7 @@ export default function RegisterUserPage() {
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
+  
 
   const showSweetAlert = () => {
     if (swalLoaded && window.Swal) {
