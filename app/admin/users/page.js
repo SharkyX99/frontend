@@ -8,15 +8,17 @@ export default function UserManagement() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [deleting, setDeleting] = useState(null); // Track which item is being deleted
+  const [deleting, setDeleting] = useState(null);
+  const [token, setToken] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    const t = localStorage.getItem('token');
+    if (!t) {
       router.push('/signin');
       return;
     }
+    setToken(t);
 
     async function getUsers() {
       try {
@@ -34,9 +36,15 @@ export default function UserManagement() {
     }
 
     getUsers();
-    const interval = setInterval(getUsers, 5000); // Auto-refresh every 5 seconds
+    const interval = setInterval(getUsers, 5000); // auto-refresh
     return () => clearInterval(interval);
   }, [router]);
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    router.push('/signin');
+  };
 
   const handleDelete = async (id, name) => {
     try {
@@ -96,7 +104,17 @@ export default function UserManagement() {
   );
 
   return (
-    <div className="min-vh-100" style={{ backgroundColor: '#f8f9fa', paddingTop: '70px' }}>
+    <div className="min-vh-100" style={{ backgroundColor: '#f8f9fa', paddingTop: '20px' }}>
+      {/* SignOut Button */}
+      {token && (
+        <div className="container text-end mb-3">
+          <button className="btn btn-outline-danger" onClick={handleSignOut}>
+            <i className="bi bi-box-arrow-right"></i> SignOut
+          </button>
+        </div>
+      )}
+
+      {/* Page Header */}
       <div className="bg-primary text-white py-4 mb-4">
         <div className="container">
           <h1 className="mb-1"><i className="fas fa-users me-3"></i>User Management</h1>
@@ -104,8 +122,9 @@ export default function UserManagement() {
         </div>
       </div>
 
-
+      {/* Users Table & Stats */}
       <div className="container mt-50">
+        {/* Stats Cards */}
         <div className="row mb-4">
           <div className="col-md-3">
             <div className="card border-0 shadow-sm text-center">
@@ -135,11 +154,11 @@ export default function UserManagement() {
           </div>
         </div>
 
+        {/* Users Table */}
         <div className="card border-0 shadow-sm">
           <div className="card-header bg-white py-3">
             <h5 className="mb-0 fw-bold"><i className="fas fa-list me-2 text-primary"></i>Users List</h5>
           </div>
-
           <div className="card-body p-0">
             {items.length === 0 ? (
               <div className="text-center py-5">

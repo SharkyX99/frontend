@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')
@@ -7,6 +8,23 @@ export default function LoginPage() {
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role'); // สมมติ login แล้วเก็บ role ไว้ด้วย
+
+    if (!token) {
+      router.push('/signin');
+      return;
+    }
+    if (role !== 'admin') {
+      router.push('/'); // หรือ redirect ไปหน้าอื่นที่ไม่ใช่ admin
+      return;
+    }
+
+    // ...getUsers() ตามเดิม...
+  }, []);
 
   const handleSubmit = async () => {
     setIsLoading(true)
