@@ -76,7 +76,7 @@ export default function UserManagement() {
   if (loading) return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center">
       <div className="text-center">
-        <div className="spinner-border text-primary mb-3" role="status" style={{width: '3rem', height: '3rem'}}></div>
+        <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}></div>
         <h5 className="text-muted">Loading users...</h5>
       </div>
     </div>
@@ -96,7 +96,7 @@ export default function UserManagement() {
   );
 
   return (
-    <div className="min-vh-100" style={{backgroundColor: '#f8f9fa'}}>
+    <div className="min-vh-100" style={{ backgroundColor: '#f8f9fa', paddingTop: '70px' }}>
       <div className="bg-primary text-white py-4 mb-4">
         <div className="container">
           <h1 className="mb-1"><i className="fas fa-users me-3"></i>User Management</h1>
@@ -104,7 +104,8 @@ export default function UserManagement() {
         </div>
       </div>
 
-      <div className="container">
+
+      <div className="container mt-50">
         <div className="row mb-4">
           <div className="col-md-3">
             <div className="card border-0 shadow-sm text-center">
@@ -168,8 +169,8 @@ export default function UserManagement() {
                         <td className="text-center">
                           <div className="btn-group">
                             <Link href={`/admin/users/edit/${item.id}`} className="btn btn-outline-warning btn-sm"><i className="fas fa-edit"></i> Edit</Link>
-                            <button 
-                              className="btn btn-outline-danger btn-sm" 
+                            <button
+                              className="btn btn-outline-danger btn-sm"
                               onClick={() => handleDelete(item.id, item.firstname || item.fullname)}
                               disabled={deleting === item.id}
                             >
