@@ -27,7 +27,7 @@ export default function EditUserPage({ params }) {
     async function getUser() {
       try {
         setLoading(true)
-        const res = await fetch(`http://itdev.cmtc.ac.th:3000/api/users/${id}`)
+        const res = await fetch(`https://backend-nextjs-virid.vercel.app/api/users/${id}`)
         if (!res.ok) throw new Error('Failed to fetch user data')
         const data = await res.json()
         setItems(data)
@@ -89,7 +89,7 @@ export default function EditUserPage({ params }) {
 
     try {
       setSubmitting(true)
-      const res = await fetch('http://itdev.cmtc.ac.th:3000/api/users', {
+      const res = await fetch('https://backend-nextjs-virid.vercel.app/api/users', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

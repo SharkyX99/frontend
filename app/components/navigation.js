@@ -2,19 +2,18 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from "../context/AuthContext"
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
-  const { user, isAdmin } = useAuth()
+  const { user, isAdmin, setUser } = useAuth()
   const pathname = usePathname()
+  const router = useRouter()
 
-  // หน้าเฉพาะที่ต้องการตัวหนังสือดำ
   const blackTextPages = ['/contact']
 
-  // ตรวจสอบ scroll
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY
@@ -36,6 +35,13 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // 👉 ออกจากระบบ
+  const handleSignOut = () => {
+    localStorage.removeItem("token")
+    setUser(null)
+    router.push("/login")
+  }
+
   const navLinks = [
     { href: '/', label: 'Home', icon: '🏠' },
     { href: '/about', label: 'About', icon: '👤' },
@@ -54,30 +60,28 @@ export default function Navigation() {
     <>
       <style jsx>{`
         .glass-nav {
-          position: fixed;
+          position: fixed;   /* ✅ sticky */
           top: 0;
+          left: 0;
           width: 100%;
           z-index: 999;
-          background: rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.15); /* ใสแบบแก้ว */
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-          transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+          transition: all 0.3s ease;
         }
 
         .glass-nav.scrolled {
-          background: rgba(255, 255, 255, 0.15);
+          background: rgba(255, 255, 255, 0.9); /* เข้มขึ้นตอน scroll */
           backdrop-filter: blur(25px);
           -webkit-backdrop-filter: blur(25px);
-          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+          box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
 
         .nav-link {
           position: relative;
           transition: all 0.3s ease;
-          text-decoration: none;
           padding: 0.5rem 1rem;
           border-radius: 25px;
           display: flex;
@@ -97,22 +101,20 @@ export default function Navigation() {
           font-weight: 800;
           font-size: 1.5rem;
           text-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
-          transition: color 0.3s ease;
         }
 
         .glass-btn {
           padding: 0.6rem 1.5rem;
           border-radius: 30px;
-          text-decoration: none;
-          transition: all 0.3s ease;
           font-weight: 600;
           display: inline-flex;
           align-items: center;
-          justify-content: center;
           gap: 0.5rem;
           font-size: 0.9rem;
-          white-space: nowrap;
-          min-width: 120px;
+          transition: all 0.3s ease;
+          background: rgba(255,255,255,0.2);
+          backdrop-filter: blur(10px);
+          border: none;
         }
 
         .mobile-menu {
@@ -130,36 +132,19 @@ export default function Navigation() {
           to { opacity: 1; transform: translateY(0); }
         }
 
-        .hamburger {
-          width: 30px;
-          height: 20px;
-          position: relative;
-          transform: rotate(0deg);
-          transition: .5s ease-in-out;
-          cursor: pointer;
-        }
-
         .hamburger span {
           display: block;
-          position: absolute;
           height: 3px;
-          width: 100%;
-          border-radius: 9px;
-          opacity: 1;
-          left: 0;
-          transform: rotate(0deg);
-          transition: .25s ease-in-out;
+          width: 30px;
+          margin: 5px 0;
+          background: currentColor;
+          border-radius: 3px;
+          transition: 0.3s;
         }
 
-        .hamburger span:nth-child(1){top:0px;}
-        .hamburger span:nth-child(2),
-        .hamburger span:nth-child(3){top:8px;}
-        .hamburger span:nth-child(4){top:16px;}
-
-        .hamburger.open span:nth-child(1){top:8px;width:0%;left:50%;}
-        .hamburger.open span:nth-child(2){transform:rotate(45deg);}
-        .hamburger.open span:nth-child(3){transform:rotate(-45deg);}
-        .hamburger.open span:nth-child(4){top:8px;width:0%;left:50%;}
+        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
       `}</style>
 
       <nav className={`navbar navbar-expand-lg glass-nav ${scrolled ? 'scrolled' : ''}`}>
@@ -175,11 +160,8 @@ export default function Navigation() {
             type="button"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <div className={`hamburger ${isOpen ? 'open' : ''}`}>
-              <span style={{ background: getLinkColor() }}></span>
-              <span style={{ background: getLinkColor() }}></span>
-              <span style={{ background: getLinkColor() }}></span>
-              <span style={{ background: getLinkColor() }}></span>
+            <div className={`hamburger ${isOpen ? 'open' : ''}`} style={{ color: getLinkColor() }}>
+              <span></span><span></span><span></span>
             </div>
           </button>
 
@@ -238,7 +220,7 @@ export default function Navigation() {
                     </li>
                     <li><hr className="dropdown-divider" /></li>
                     <li>
-                      <button className="dropdown-item">
+                      <button className="dropdown-item" onClick={handleSignOut}>
                         🚪 ออกจากระบบ
                       </button>
                     </li>
@@ -254,9 +236,10 @@ export default function Navigation() {
               <div className="d-flex flex-column gap-3">
                 {navLinks.map((link) => (
                   <Link
+                    key={link.href}
                     href={link.href}
                     className="nav-link"
-                    style={{ color: getLinkColor() }}
+                    style={{ color: '#000' }}
                     onClick={() => setIsOpen(false)}
                   >
                     {link.label}
@@ -266,11 +249,19 @@ export default function Navigation() {
                   <Link
                     href="/admin"
                     className="nav-link text-center"
-                    style={{ color: getLinkColor() }}
+                    style={{ color: '#000' }}
                     onClick={() => setIsOpen(false)}
                   >
                     ⚙️ Admin
                   </Link>
+                )}
+                {user && (
+                  <button
+                    className="glass-btn text-center"
+                    onClick={() => { handleSignOut(); setIsOpen(false) }}
+                  >
+                    🚪 ออกจากระบบ
+                  </button>
                 )}
               </div>
             </div>

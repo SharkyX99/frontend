@@ -328,7 +328,7 @@ export default function ContactPage() {
               onMouseLeave={(e) => (e.currentTarget.style.background = "#f3f4f6")}
             >
               <span>📧</span>
-              <span style={{ color: "#374151" }}>Email</span>
+              <span style={{ color: "#374151" }}>Email : nuttanawawat6933@gmail.com</span>
             </button>
             <button
               style={{
@@ -347,7 +347,7 @@ export default function ContactPage() {
               onMouseLeave={(e) => (e.currentTarget.style.background = "#f3f4f6")}
             >
               <span>📍</span>
-              <span style={{ color: "#374151" }}>Location</span>
+              <span style={{ color: "#374151" }}>Location : Chiang mai (CNX)</span>
             </button>
           </div>
         </div>

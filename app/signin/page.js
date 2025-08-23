@@ -15,7 +15,7 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const res = await fetch('http://itdev.cmtc.ac.th:3000/api/auth/login', {
+      const res = await fetch('https://backend-nextjs-virid.vercel.app/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })

@@ -220,7 +220,7 @@ export default function AboutPage() {
                     e.currentTarget.style.boxShadow = '0 10px 25px rgba(102, 126, 234, 0.3)';
                   }}
                 >
-                  📞 ติดต่อฉัน
+                  📞 Contact Me
                 </div>
               </Link>
             </div>
