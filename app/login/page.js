@@ -15,9 +15,10 @@ export default function LoginPage() {
     const role = localStorage.getItem('role'); // สมมติ login แล้วเก็บ role ไว้ด้วย
 
     if (!token) {
-      router.push('/signin');
+      router.push('/login');  // ✅ เปลี่ยนให้ไปหน้า login
       return;
     }
+
     if (role !== 'admin') {
       router.push('/'); // หรือ redirect ไปหน้าอื่นที่ไม่ใช่ admin
       return;
@@ -26,97 +27,81 @@ export default function LoginPage() {
     // ...getUsers() ตามเดิม...
   }, []);
 
-  const handleSubmit = async () => {
-    setIsLoading(true)
-    setError(null)
-    
-    // Simulate authentication
-    setTimeout(() => {
-      if (username === 'admin' && password === '123456') {
-        // Success - would normally redirect to dashboard
-        alert('เข้าสู่ระบบสำเร็จ! สวัสดี Admin')
-      } else {
-        setError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')
-      }
-      setIsLoading(false)
-    }, 1500)
-  }
-
   return (
     <>
-      <link 
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" 
+      <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
         rel="stylesheet"
       />
-      <link 
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+      <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         rel="stylesheet"
       />
-      <script 
+      <script
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"
       ></script>
 
-      <div className="min-vh-100 d-flex align-items-center justify-content-center position-relative" 
-           style={{
-             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-             overflow: 'hidden'
-           }}>
-        
+      <div className="min-vh-100 d-flex align-items-center justify-content-center position-relative"
+        style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          overflow: 'hidden'
+        }}>
+
         {/* Animated Background Elements */}
         <div className="position-absolute w-100 h-100" style={{ zIndex: 0 }}>
-          <div className="floating-shape position-absolute" 
-               style={{
-                 width: '200px',
-                 height: '200px',
-                 background: 'rgba(255,255,255,0.1)',
-                 borderRadius: '50%',
-                 top: '10%',
-                 left: '10%',
-                 animation: 'float 6s ease-in-out infinite'
-               }}></div>
-          <div className="floating-shape position-absolute" 
-               style={{
-                 width: '150px',
-                 height: '150px',
-                 background: 'rgba(255,255,255,0.1)',
-                 borderRadius: '50%',
-                 top: '70%',
-                 right: '10%',
-                 animation: 'float 8s ease-in-out infinite reverse'
-               }}></div>
-          <div className="floating-shape position-absolute" 
-               style={{
-                 width: '100px',
-                 height: '100px',
-                 background: 'rgba(255,255,255,0.1)',
-                 borderRadius: '50%',
-                 top: '20%',
-                 right: '20%',
-                 animation: 'float 7s ease-in-out infinite'
-               }}></div>
+          <div className="floating-shape position-absolute"
+            style={{
+              width: '200px',
+              height: '200px',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '50%',
+              top: '10%',
+              left: '10%',
+              animation: 'float 6s ease-in-out infinite'
+            }}></div>
+          <div className="floating-shape position-absolute"
+            style={{
+              width: '150px',
+              height: '150px',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '50%',
+              top: '70%',
+              right: '10%',
+              animation: 'float 8s ease-in-out infinite reverse'
+            }}></div>
+          <div className="floating-shape position-absolute"
+            style={{
+              width: '100px',
+              height: '100px',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '50%',
+              top: '20%',
+              right: '20%',
+              animation: 'float 7s ease-in-out infinite'
+            }}></div>
         </div>
 
         <div className="container position-relative" style={{ zIndex: 1 }}>
           <div className="row justify-content-center">
             <div className="col-md-6 col-lg-5 col-xl-4">
-              
+
               {/* Login Card */}
               <div className="card shadow-lg border-0 rounded-4 overflow-hidden"
-                   style={{ 
-                     backdropFilter: 'blur(10px)',
-                     background: 'rgba(255, 255, 255, 0.95)',
-                     boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)'
-                   }}>
-                
+                style={{
+                  backdropFilter: 'blur(10px)',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)'
+                }}>
+
                 {/* Card Header */}
                 <div className="card-header bg-transparent border-0 text-center py-4">
-                  <div className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-lg" 
-                       style={{
-                         width: '70px',
-                         height: '70px',
-                         background: 'linear-gradient(45deg, #667eea, #764ba2)',
-                         animation: 'pulse 2s ease-in-out infinite alternate'
-                       }}>
+                  <div className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-lg"
+                    style={{
+                      width: '70px',
+                      height: '70px',
+                      background: 'linear-gradient(45deg, #667eea, #764ba2)',
+                      animation: 'pulse 2s ease-in-out infinite alternate'
+                    }}>
                     <i className="fas fa-lock fa-2x text-white"></i>
                   </div>
                   <h3 className="mb-0 fw-bold" style={{ color: '#2d3748' }}>
@@ -129,22 +114,22 @@ export default function LoginPage() {
 
                 {/* Card Body */}
                 <div className="card-body px-4 pb-4">
-                  
+
                   {/* Error Alert */}
                   {error && (
-                    <div className="alert alert-danger border-0 rounded-3 mb-4" 
-                         style={{ 
-                           background: 'linear-gradient(45deg, #ff6b6b, #ee5a24)',
-                           color: 'white',
-                           animation: 'slideInDown 0.3s ease'
-                         }}>
+                    <div className="alert alert-danger border-0 rounded-3 mb-4"
+                      style={{
+                        background: 'linear-gradient(45deg, #ff6b6b, #ee5a24)',
+                        color: 'white',
+                        animation: 'slideInDown 0.3s ease'
+                      }}>
                       <i className="fas fa-exclamation-circle me-2"></i>
                       {error}
                     </div>
                   )}
 
                   <div>
-                    
+
                     {/* Username Field */}
                     <div className="mb-4">
                       <label htmlFor="username" className="form-label fw-medium text-dark">
@@ -152,10 +137,10 @@ export default function LoginPage() {
                         ชื่อผู้ใช้
                       </label>
                       <div className="position-relative">
-                        <input 
-                          type="text" 
-                          className="form-control form-control-lg border-2 rounded-3" 
-                          id="username" 
+                        <input
+                          type="text"
+                          className="form-control form-control-lg border-2 rounded-3"
+                          id="username"
                           value={username}
                           onChange={(e) => setUsername(e.target.value)}
                           placeholder="กรอกชื่อผู้ใช้"
@@ -174,12 +159,12 @@ export default function LoginPage() {
                             e.target.style.boxShadow = 'none'
                           }}
                         />
-                        <i className="fas fa-user position-absolute text-muted" 
-                           style={{
-                             left: '15px',
-                             top: '50%',
-                             transform: 'translateY(-50%)'
-                           }}></i>
+                        <i className="fas fa-user position-absolute text-muted"
+                          style={{
+                            left: '15px',
+                            top: '50%',
+                            transform: 'translateY(-50%)'
+                          }}></i>
                       </div>
                     </div>
 
@@ -190,10 +175,10 @@ export default function LoginPage() {
                         รหัสผ่าน
                       </label>
                       <div className="position-relative">
-                        <input 
-                          type={showPassword ? 'text' : 'password'} 
-                          className="form-control form-control-lg border-2 rounded-3" 
-                          id="password" 
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          className="form-control form-control-lg border-2 rounded-3"
+                          id="password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="กรอกรหัสผ่าน"
@@ -213,13 +198,13 @@ export default function LoginPage() {
                             e.target.style.boxShadow = 'none'
                           }}
                         />
-                        <i className="fas fa-lock position-absolute text-muted" 
-                           style={{
-                             left: '15px',
-                             top: '50%',
-                             transform: 'translateY(-50%)'
-                           }}></i>
-                        <button 
+                        <i className="fas fa-lock position-absolute text-muted"
+                          style={{
+                            left: '15px',
+                            top: '50%',
+                            transform: 'translateY(-50%)'
+                          }}></i>
+                        <button
                           type="button"
                           className="btn position-absolute border-0 bg-transparent"
                           onClick={() => setShowPassword(!showPassword)}
@@ -250,10 +235,10 @@ export default function LoginPage() {
 
                     {/* Login Button */}
                     <div className="d-grid mb-3">
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         disabled={isLoading}
-                        onClick={handleSubmit}
+
                         className="btn btn-lg fw-bold py-3 rounded-3 position-relative overflow-hidden"
                         style={{
                           background: 'linear-gradient(45deg, #667eea, #764ba2)',
@@ -293,21 +278,31 @@ export default function LoginPage() {
                     </div>
 
                     {/* Demo Credentials */}
-                    <div className="alert alert-info border-0 rounded-3 mt-4" 
-                         style={{ 
-                           background: 'linear-gradient(45deg, #17a2b8, #138496)',
-                           color: 'white' 
-                         }}>
-                      <i className="fas fa-info-circle me-2"></i>
-                      <strong>ข้อมูลทดสอบ:</strong><br />
-                      <small>ชื่อผู้ใช้: admin | รหัสผ่าน: 123456</small>
+                    {/* ปุ่ม Login Admin แทนข้อมูลทดสอบ */}
+                    {/* Demo Credentials */}
+                    <div className="d-grid mt-3">
+                      <button
+                        type="button"
+                        className="btn btn-outline-info fw-bold py-3 rounded-3"
+                        style={{
+                          border: '2px solid #17a2b8',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onClick={() => {
+                          router.push('/signin');   // ✅ กดแล้วไปหน้า signin
+                        }}
+                      >
+                        <i className="fas fa-user-shield me-2"></i>
+                        Login Admin
+                      </button>
                     </div>
+
 
                     {/* Register Link */}
                     <div className="text-center mt-4">
                       <small className="text-muted">
-                        ยังไม่มีบัญชี? 
-                        <a href="#" className="text-decoration-none fw-medium ms-1" style={{ color: '#667eea' }}>
+                        ยังไม่มีบัญชี?
+                        <a href="/register" className="text-decoration-none fw-medium ms-1" style={{ color: '#667eea' }}>
                           <i className="fas fa-user-plus me-1"></i>
                           สมัครสมาชิก
                         </a>

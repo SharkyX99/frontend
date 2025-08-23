@@ -537,7 +537,7 @@ export default function RegisterUserPage() {
                         <div className="text-center">
                           <small className="text-muted">
                             มีบัญชีแล้ว? 
-                            <a href="#" className="text-decoration-none fw-medium ms-1" style={{ color: '#667eea' }}>
+                            <a href="/login" className="text-decoration-none fw-medium ms-1" style={{ color: '#667eea' }}>
                               <i className="fas fa-sign-in-alt me-1"></i>
                               เข้าสู่ระบบ
                             </a>
