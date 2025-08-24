@@ -35,7 +35,7 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // 👉 ออกจากระบบ
+  // ✅ ฟังก์ชันออกจากระบบ
   const handleSignOut = () => {
     localStorage.removeItem("token")
     setUser(null)
@@ -220,7 +220,7 @@ export default function Navigation() {
                     </li>
                     <li><hr className="dropdown-divider" /></li>
                     <li>
-                      <button className="dropdown-item" onClick={handleSignOut}>
+                      <button className="dropdown-item text-danger" onClick={handleSignOut}>
                         🚪 ออกจากระบบ
                       </button>
                     </li>

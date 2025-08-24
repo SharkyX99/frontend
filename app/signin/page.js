@@ -1,37 +1,59 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Swal from 'sweetalert2'
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     setIsLoading(true)
-    setError(null)
 
     try {
-      const res = await fetch('https://backend-nextjs-virid.vercel.app/api/auth/login', {
+      const res = await fetch("https://backend-nextjs-virid.vercel.app/login", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       })
 
+      if (!res.ok) {
+        throw new Error('API ไม่ตอบสนองหรือเกิดข้อผิดพลาด')
+      }
+
       const data = await res.json()
 
       if (data.token) {
         localStorage.setItem('token', data.token)
-        router.push('/admin/users')
+        Swal.fire({
+          icon: 'success',
+          title: '<h3>เข้าสู่ระบบสำเร็จ!</h3>',
+          showConfirmButton: false,
+          timer: 2000
+        }).then(() => {
+          // ใช้ window.location.href เพื่อ reload state ของ app
+          window.location.href = "/admin/users"
+        })
       } else {
-        setError(data.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')
+        Swal.fire({
+          icon: 'warning',
+          title: '<h3>เข้าสู่ระบบไม่สำเร็จ</h3>',
+          text: data.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+          showConfirmButton: true
+        })
       }
     } catch (err) {
       console.error(err)
-      setError('เกิดข้อผิดพลาดในการเชื่อมต่อ')
+      Swal.fire({
+        icon: 'error',
+        title: '<h3>การเชื่อมต่อล้มเหลว</h3>',
+        text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
+        showConfirmButton: true
+      })
     } finally {
       setIsLoading(false)
     }
@@ -53,7 +75,7 @@ export default function LoginPage() {
              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
              overflow: 'hidden'
            }}>
-        
+
         {/* Animated Background Elements */}
         <div className="position-absolute w-100 h-100" style={{ zIndex: 0 }}>
           <div className="floating-shape position-absolute" 
@@ -121,16 +143,7 @@ export default function LoginPage() {
 
                 {/* Card Body */}
                 <div className="card-body px-4 pb-4">
-                  
-                  {/* Error Alert */}
-                  {error && (
-                    <div className="alert alert-danger border-0 rounded-3 mb-4">
-                      <i className="fas fa-exclamation-circle me-2"></i>
-                      {error}
-                    </div>
-                  )}
-
-                  <div>
+                  <form onSubmit={handleSubmit}>
                     {/* Username */}
                     <div className="mb-4">
                       <label className="form-label fw-medium text-dark">
@@ -176,9 +189,8 @@ export default function LoginPage() {
                     {/* Login Button */}
                     <div className="d-grid mb-3">
                       <button 
-                        type="button" 
+                        type="submit" 
                         disabled={isLoading}
-                        onClick={handleSubmit}
                         className="btn btn-lg fw-bold py-3 rounded-3"
                         style={{
                           background: 'linear-gradient(45deg, #667eea, #764ba2)',
@@ -189,7 +201,7 @@ export default function LoginPage() {
                         {isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
                       </button>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </div>
 
