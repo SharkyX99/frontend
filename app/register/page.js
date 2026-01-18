@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
-import { registerUser } from '../service/auth'; // เรียกใช้ service (ต้องตรวจสอบว่า path ถูกต้อง)
+import { registerUser } from '../service/auth';
 
 export default function RegisterUserPage() {
   const router = useRouter();
