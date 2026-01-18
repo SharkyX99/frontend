@@ -1,34 +1,64 @@
-'use client'
-import { useState, useEffect } from 'react'
+'use client';
+
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { loginUser } from '../service/auth'; // เรียกใช้ service ตามโค้ดชุดแรก
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  // --- State สำหรับ Logic และ UI ---
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null); // ไว้แสดง Error สวยๆ ใน Alert UI
+  const [isLoading, setIsLoading] = useState(false); // ควบคุม Loading Spinner ที่ปุ่ม
+  const [showPassword, setShowPassword] = useState(false);
+
   const router = useRouter();
 
+  // --- ตรวจสอบว่า Login อยู่แล้วหรือยัง ---
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role'); // สมมติ login แล้วเก็บ role ไว้ด้วย
-
-    if (!token) {
-      router.push('/login');  // ✅ เปลี่ยนให้ไปหน้า login
-      return;
+    if (token) {
+      // ถ้ามี token แล้ว ให้เด้งไปหน้า Dashboard เลย
+      router.push('/');
     }
+  }, [router]);
 
-    if (role !== 'admin') {
-      router.push('/'); // หรือ redirect ไปหน้าอื่นที่ไม่ใช่ admin
-      return;
+  // --- ฟังก์ชัน Login (หัวใจหลัก) ---
+  const handleLogin = async (e) => {
+    if (e) e.preventDefault(); // ป้องกันการ refresh หน้าจอ
+
+    // Reset Error และเริ่ม Loading
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      // เรียกใช้ API loginUser
+      const result = await loginUser(username, password);
+
+      if (result.ok) {
+        // alert('เข้าสู่ระบบสำเร็จ!'); // (Optional) อาจจะไม่ต้อง alert ก็ได้ถ้าจะ redirect เลย
+        router.push('/'); // ไปหน้า Dashboard หรือหน้าแรก
+      } else {
+        // แสดง Error ที่ได้จาก API หรือข้อความ Default
+        setError(result.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+        setIsLoading(false); // หยุด Loading เพื่อให้กรอกใหม่
+      }
+    } catch (err) {
+      setError('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+      setIsLoading(false);
     }
+  };
 
-    // ...getUsers() ตามเดิม...
-  }, []);
+  // ฟังก์ชันกด Enter แล้ว Login ได้เลย
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleLogin();
+    }
+  };
 
   return (
     <>
+      {/* External CSS (จาก UI เดิม) */}
       <link
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
         rel="stylesheet"
@@ -50,35 +80,11 @@ export default function LoginPage() {
         {/* Animated Background Elements */}
         <div className="position-absolute w-100 h-100" style={{ zIndex: 0 }}>
           <div className="floating-shape position-absolute"
-            style={{
-              width: '200px',
-              height: '200px',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '50%',
-              top: '10%',
-              left: '10%',
-              animation: 'float 6s ease-in-out infinite'
-            }}></div>
+            style={{ width: '200px', height: '200px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', top: '10%', left: '10%', animation: 'float 6s ease-in-out infinite' }}></div>
           <div className="floating-shape position-absolute"
-            style={{
-              width: '150px',
-              height: '150px',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '50%',
-              top: '70%',
-              right: '10%',
-              animation: 'float 8s ease-in-out infinite reverse'
-            }}></div>
+            style={{ width: '150px', height: '150px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', top: '70%', right: '10%', animation: 'float 8s ease-in-out infinite reverse' }}></div>
           <div className="floating-shape position-absolute"
-            style={{
-              width: '100px',
-              height: '100px',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '50%',
-              top: '20%',
-              right: '20%',
-              animation: 'float 7s ease-in-out infinite'
-            }}></div>
+            style={{ width: '100px', height: '100px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', top: '20%', right: '20%', animation: 'float 7s ease-in-out infinite' }}></div>
         </div>
 
         <div className="container position-relative" style={{ zIndex: 1 }}>
@@ -96,12 +102,7 @@ export default function LoginPage() {
                 {/* Card Header */}
                 <div className="card-header bg-transparent border-0 text-center py-4">
                   <div className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-lg"
-                    style={{
-                      width: '70px',
-                      height: '70px',
-                      background: 'linear-gradient(45deg, #667eea, #764ba2)',
-                      animation: 'pulse 2s ease-in-out infinite alternate'
-                    }}>
+                    style={{ width: '70px', height: '70px', background: 'linear-gradient(45deg, #667eea, #764ba2)', animation: 'pulse 2s ease-in-out infinite alternate' }}>
                     <i className="fas fa-lock fa-2x text-white"></i>
                   </div>
                   <h3 className="mb-0 fw-bold" style={{ color: '#2d3748' }}>
@@ -115,21 +116,16 @@ export default function LoginPage() {
                 {/* Card Body */}
                 <div className="card-body px-4 pb-4">
 
-                  {/* Error Alert */}
+                  {/* Error Alert (แสดงผลเมื่อ Login ไม่ผ่าน) */}
                   {error && (
                     <div className="alert alert-danger border-0 rounded-3 mb-4"
-                      style={{
-                        background: 'linear-gradient(45deg, #ff6b6b, #ee5a24)',
-                        color: 'white',
-                        animation: 'slideInDown 0.3s ease'
-                      }}>
+                      style={{ background: 'linear-gradient(45deg, #ff6b6b, #ee5a24)', color: 'white', animation: 'slideInDown 0.3s ease' }}>
                       <i className="fas fa-exclamation-circle me-2"></i>
                       {error}
                     </div>
                   )}
 
-                  <div>
-
+                  <form onSubmit={handleLogin}>
                     {/* Username Field */}
                     <div className="mb-4">
                       <label htmlFor="username" className="form-label fw-medium text-dark">
@@ -143,28 +139,15 @@ export default function LoginPage() {
                           id="username"
                           value={username}
                           onChange={(e) => setUsername(e.target.value)}
+                          onKeyDown={handleKeyDown} // กด Enter ได้
                           placeholder="กรอกชื่อผู้ใช้"
                           required
-                          style={{
-                            paddingLeft: '50px',
-                            border: '2px solid #e9ecef',
-                            transition: 'all 0.3s ease'
-                          }}
-                          onFocus={(e) => {
-                            e.target.style.borderColor = '#667eea'
-                            e.target.style.boxShadow = '0 0 0 0.25rem rgba(102, 126, 234, 0.25)'
-                          }}
-                          onBlur={(e) => {
-                            e.target.style.borderColor = '#e9ecef'
-                            e.target.style.boxShadow = 'none'
-                          }}
+                          style={{ paddingLeft: '50px', border: '2px solid #e9ecef', transition: 'all 0.3s ease' }}
+                          onFocus={(e) => { e.target.style.borderColor = '#667eea'; e.target.style.boxShadow = '0 0 0 0.25rem rgba(102, 126, 234, 0.25)'; }}
+                          onBlur={(e) => { e.target.style.borderColor = '#e9ecef'; e.target.style.boxShadow = 'none'; }}
                         />
                         <i className="fas fa-user position-absolute text-muted"
-                          style={{
-                            left: '15px',
-                            top: '50%',
-                            transform: 'translateY(-50%)'
-                          }}></i>
+                          style={{ left: '15px', top: '50%', transform: 'translateY(-50%)' }}></i>
                       </div>
                     </div>
 
@@ -181,39 +164,20 @@ export default function LoginPage() {
                           id="password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
+                          onKeyDown={handleKeyDown} // กด Enter ได้
                           placeholder="กรอกรหัสผ่าน"
                           required
-                          style={{
-                            paddingLeft: '50px',
-                            paddingRight: '50px',
-                            border: '2px solid #e9ecef',
-                            transition: 'all 0.3s ease'
-                          }}
-                          onFocus={(e) => {
-                            e.target.style.borderColor = '#667eea'
-                            e.target.style.boxShadow = '0 0 0 0.25rem rgba(102, 126, 234, 0.25)'
-                          }}
-                          onBlur={(e) => {
-                            e.target.style.borderColor = '#e9ecef'
-                            e.target.style.boxShadow = 'none'
-                          }}
+                          style={{ paddingLeft: '50px', paddingRight: '50px', border: '2px solid #e9ecef', transition: 'all 0.3s ease' }}
+                          onFocus={(e) => { e.target.style.borderColor = '#667eea'; e.target.style.boxShadow = '0 0 0 0.25rem rgba(102, 126, 234, 0.25)'; }}
+                          onBlur={(e) => { e.target.style.borderColor = '#e9ecef'; e.target.style.boxShadow = 'none'; }}
                         />
                         <i className="fas fa-lock position-absolute text-muted"
-                          style={{
-                            left: '15px',
-                            top: '50%',
-                            transform: 'translateY(-50%)'
-                          }}></i>
+                          style={{ left: '15px', top: '50%', transform: 'translateY(-50%)' }}></i>
                         <button
                           type="button"
                           className="btn position-absolute border-0 bg-transparent"
                           onClick={() => setShowPassword(!showPassword)}
-                          style={{
-                            right: '10px',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            zIndex: 10
-                          }}
+                          style={{ right: '10px', top: '50%', transform: 'translateY(-50%)', zIndex: 10 }}
                         >
                           <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} text-muted`}></i>
                         </button>
@@ -233,12 +197,11 @@ export default function LoginPage() {
                       </a>
                     </div>
 
-                    {/* Login Button */}
+                    {/* Login Button (เชื่อมกับ state isLoading) */}
                     <div className="d-grid mb-3">
                       <button
-                        type="button"
+                        type="submit" // เปลี่ยนเป็น submit เพื่อ trigger form
                         disabled={isLoading}
-
                         className="btn btn-lg fw-bold py-3 rounded-3 position-relative overflow-hidden"
                         style={{
                           background: 'linear-gradient(45deg, #667eea, #764ba2)',
@@ -248,18 +211,8 @@ export default function LoginPage() {
                           transition: 'all 0.3s ease',
                           transform: isLoading ? 'scale(0.98)' : 'scale(1)'
                         }}
-                        onMouseOver={(e) => {
-                          if (!isLoading) {
-                            e.target.style.transform = 'translateY(-2px)'
-                            e.target.style.boxShadow = '0 12px 30px rgba(102, 126, 234, 0.4)'
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          if (!isLoading) {
-                            e.target.style.transform = 'translateY(0)'
-                            e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)'
-                          }
-                        }}
+                        onMouseOver={(e) => { if (!isLoading) { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 12px 30px rgba(102, 126, 234, 0.4)'; } }}
+                        onMouseOut={(e) => { if (!isLoading) { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)'; } }}
                       >
                         {isLoading ? (
                           <>
@@ -277,141 +230,67 @@ export default function LoginPage() {
                       </button>
                     </div>
 
-                    {/* Demo Credentials */}
-                    {/* ปุ่ม Login Admin แทนข้อมูลทดสอบ */}
-                    {/* Demo Credentials */}
+                    {/* Demo Button (ปรับให้เป็นการทดลองใส่ค่า Admin แทนการ redirect ผิดๆ) */}
                     <div className="d-grid mt-3">
                       <button
                         type="button"
                         className="btn btn-outline-info fw-bold py-3 rounded-3"
-                        style={{
-                          border: '2px solid #17a2b8',
-                          transition: 'all 0.3s ease'
-                        }}
+                        style={{ border: '2px solid #17a2b8', transition: 'all 0.3s ease' }}
                         onClick={() => {
-                          router.push('/signin');   // ✅ กดแล้วไปหน้า signin
+                          // Auto-fill สำหรับ Demo
+                          setUsername('admin');
+                          setPassword('password123');
                         }}
                       >
                         <i className="fas fa-user-shield me-2"></i>
-                        Login Admin
+                        Demo: กรอกข้อมูล Admin
                       </button>
                     </div>
+                  </form>
 
-
-                    {/* Register Link */}
-                    <div className="text-center mt-4">
-                      <small className="text-muted">
-                        ยังไม่มีบัญชี?
-                        <a href="/register" className="text-decoration-none fw-medium ms-1" style={{ color: '#667eea' }}>
-                          <i className="fas fa-user-plus me-1"></i>
-                          สมัครสมาชิก
-                        </a>
-                      </small>
-                    </div>
+                  {/* Register Link */}
+                  <div className="text-center mt-4">
+                    <small className="text-muted">
+                      ยังไม่มีบัญชี?
+                      <a href="/register" className="text-decoration-none fw-medium ms-1" style={{ color: '#667eea' }}>
+                        <i className="fas fa-user-plus me-1"></i>
+                        สมัครสมาชิก
+                      </a>
+                    </small>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Footer */}
-              <div className="text-center mt-4">
-                <small className="text-white-50">
-                  <i className="fas fa-shield-alt me-1"></i>
-                  ข้อมูลของคุณได้รับการปกป้องอย่างปลอดภัย
-                </small>
-              </div>
+            {/* Footer */}
+            <div className="text-center mt-4">
+              <small className="text-white-50">
+                <i className="fas fa-shield-alt me-1"></i>
+                ข้อมูลของคุณได้รับการปกป้องอย่างปลอดภัย
+              </small>
             </div>
           </div>
         </div>
-
-        {/* Custom Styles */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
-            @keyframes float {
-              0%, 100% { 
-                transform: translateY(0px) rotate(0deg); 
-              }
-              33% { 
-                transform: translateY(-30px) rotate(5deg); 
-              }
-              66% { 
-                transform: translateY(15px) rotate(-5deg); 
-              }
-            }
-            
-            @keyframes pulse {
-              0% { 
-                transform: scale(1); 
-              }
-              100% { 
-                transform: scale(1.05); 
-              }
-            }
-            
-            @keyframes slideInDown {
-              from {
-                transform: translateY(-100%);
-                opacity: 0;
-              }
-              to {
-                transform: translateY(0);
-                opacity: 1;
-              }
-            }
-            
-            .floating-shape {
-              backdrop-filter: blur(10px);
-            }
-            
-            .form-control:focus {
-              transform: translateY(-1px);
-            }
-            
-            .card {
-              transition: transform 0.3s ease;
-            }
-            
-            .card:hover {
-              transform: translateY(-5px);
-            }
-            
-            .btn:active {
-              transform: scale(0.95) !important;
-            }
-            
-            /* Glassmorphism effect */
-            .card::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-              border-radius: inherit;
-              pointer-events: none;
-            }
-            
-            /* Custom scrollbar */
-            ::-webkit-scrollbar {
-              width: 8px;
-            }
-            
-            ::-webkit-scrollbar-track {
-              background: #f1f1f1;
-              border-radius: 4px;
-            }
-            
-            ::-webkit-scrollbar-thumb {
-              background: linear-gradient(45deg, #667eea, #764ba2);
-              border-radius: 4px;
-            }
-            
-            ::-webkit-scrollbar-thumb:hover {
-              background: linear-gradient(45deg, #764ba2, #667eea);
-            }
-          `
-        }} />
       </div>
+
+      {/* Custom Styles */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 33% { transform: translateY(-30px) rotate(5deg); } 66% { transform: translateY(15px) rotate(-5deg); } }
+          @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
+          @keyframes slideInDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+          .floating-shape { backdrop-filter: blur(10px); }
+          .form-control:focus { transform: translateY(-1px); }
+          .card { transition: transform 0.3s ease; }
+          .card:hover { transform: translateY(-5px); }
+          .btn:active { transform: scale(0.95) !important; }
+          .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border-radius: inherit; pointer-events: none; }
+          ::-webkit-scrollbar { width: 8px; }
+          ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+          ::-webkit-scrollbar-thumb { background: linear-gradient(45deg, #667eea, #764ba2); border-radius: 4px; }
+          ::-webkit-scrollbar-thumb:hover { background: linear-gradient(45deg, #764ba2, #667eea); }
+        `
+      }} />
     </>
-  )
+  );
 }
