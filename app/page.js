@@ -13,7 +13,7 @@ const PremiumCarGallery = () => {
 
     const totalSlides = 5;
     const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
-    const heroTitle = ' Welcome to my World ';
+    const heroTitle = ' Welcome to my Wo ';
 
     const carouselRef = useRef(null);
     const startXRef = useRef(0);
