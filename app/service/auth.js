@@ -1,5 +1,5 @@
 // service/auth.js
-const API_URL = 'http://localhost:3000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://011-backend.vercel.app';
 
 // 1. ฟังก์ชัน Login (ของเดิมที่คุณมี)
 export const loginUser = async (username, password) => {
