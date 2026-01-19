@@ -27,7 +27,7 @@ export default function UserManagement() {
         setError(null);
         const res = await fetch(`${API_URL}/api/users`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${t}`,
           },
         });
         if (!res.ok)
