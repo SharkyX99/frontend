@@ -21,7 +21,8 @@ export const AuthProvider = ({ children }) => {
         username:
           localStorage.getItem("username") ||
           sessionStorage.getItem("username"),
-        role: localStorage.getItem("role") || sessionStorage.getItem("role"),
+        status:
+          localStorage.getItem("status") || sessionStorage.getItem("status"),
         // You might store more info or fetch it from /me endpoint
       };
       if (savedUser.username) {
@@ -31,10 +32,14 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData, remember = false) => {
+    // If userData comes from API, it might have 'token' and 'status'
+    // Ensure we save it to localStorage so persistence works
+    if (userData.token) {
+      localStorage.setItem("token", userData.token);
+      localStorage.setItem("status", userData.status || "user");
+      localStorage.setItem("username", userData.username);
+    }
     setUser(userData);
-    // Storage logic is handled in the Page component for this app structure,
-    // or we can move it here. Ideally context handles everything.
-    // For now, let's keep the context updating the state so Navbar reacts.
   };
 
   const logout = () => {
@@ -44,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     router.push("/login");
   };
 
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.status === "admin";
 
   return (
     <AuthContext.Provider value={{ user, isAdmin, login, logout, setUser }}>

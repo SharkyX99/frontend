@@ -15,12 +15,23 @@ export const loginUser = async (username, password) => {
     const data = await response.json();
 
     if (response.ok) {
+      // API returns: { status: "ok", message: "...", data: { token, status, ... } }
+      // OR my previous edit made it: { status: "ok", message: "...", ... }
+      // Wait, looking at my backend edit:
+      // res.status(200).json({ status: "ok", message: "...", data: { ... } })
+
+      // So `data` variable here is the whole JSON response.
+      // We want to return data.data which contains the user info.
+      const userInfo = data.data;
+
       if (typeof window !== "undefined") {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("username", username);
+        localStorage.setItem("token", userInfo.token);
+        localStorage.setItem("status", userInfo.status);
+        localStorage.setItem("username", userInfo.username);
+        // Remove old role key
+        localStorage.removeItem("role");
       }
-      return { ok: true, data };
+      return { ok: true, data: userInfo };
     } else {
       return { ok: false, message: data.message || "Login failed" };
     }

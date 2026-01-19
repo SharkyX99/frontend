@@ -37,16 +37,18 @@ export default function LoginPage() {
       const result = await loginUser(username, password);
 
       if (result.ok) {
-        // ตรวจสอบ Role เพื่อ Redirect (User แจ้งว่าใช้ field status)
-        const role =
-          result.data?.role ||
-          result.data?.status ||
-          localStorage.getItem("role");
+        // ตรวจสอบ Status เพื่อ Redirect (ใช้ field "status" ตาม Database)
+        // Note: API response structure might have changed, need to adapt service first or handle here
+        // The service returns { ok: true, data: ... }
+        // Let's assume the service passes through the new 'data' object from backend which is:
+        // { token, status, username ... } inside result.data
+
+        const userStatus = result.data.status || "user";
 
         // Update Context State
         login(result.data);
 
-        if (role === "admin") {
+        if (userStatus === "admin") {
           router.push("/admin/users");
         } else {
           router.push("/");
