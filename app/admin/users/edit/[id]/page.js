@@ -1,99 +1,104 @@
-'use client'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Swal from 'sweetalert2'
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "https://011-backend.vercel.app";
 
 export default function EditUserPage({ params }) {
-  const { id } = params
-  const router = useRouter()
+  const { id } = params;
+  const router = useRouter();
 
-  const [items, setItems] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  const [firstname, setFirstname] = useState('')
-  const [fullname, setFullname] = useState('')
-  const [lastname, setLastname] = useState('')
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [address, setAddress] = useState('')
-  const [sex, setSex] = useState('')
-  const [birthday, setBirthday] = useState('')
+  const [firstname, setFirstname] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [sex, setSex] = useState("");
+  const [birthday, setBirthday] = useState("");
 
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     async function getUser() {
       try {
-        setLoading(true)
-        const res = await fetch(`https://backend-nextjs-virid.vercel.app/api/users/${id}`)
-        if (!res.ok) throw new Error('Failed to fetch user data')
-        const data = await res.json()
-        setItems(data)
-        const user = data[0] || {}
+        setLoading(true);
+        const res = await fetch(`${API_URL}/api/users/${id}`);
+        if (!res.ok) throw new Error("Failed to fetch user data");
+        const data = await res.json();
+        setItems(data);
+        const user = data[0] || {};
 
-        setFirstname(user.firstname || '')
-        setFullname(user.fullname || '')
-        setLastname(user.lastname || '')
-        setUsername(user.username || '')
-        setPassword(user.password || '')
-        setConfirmPassword(user.password || '')
-        setAddress(user.address || '')
-        setSex(user.sex || '')
-        setBirthday(user.birthday || '')
-        setLoading(false)
+        setFirstname(user.firstname || "");
+        setFullname(user.fullname || "");
+        setLastname(user.lastname || "");
+        setUsername(user.username || "");
+        setPassword(user.password || "");
+        setConfirmPassword(user.password || "");
+        setAddress(user.address || "");
+        setSex(user.sex || "");
+        setBirthday(user.birthday || "");
+        setLoading(false);
       } catch (err) {
-        console.error(err)
-        setLoading(false)
+        console.error(err);
+        setLoading(false);
         Swal.fire({
-          icon: 'error',
-          title: 'เกิดข้อผิดพลาด',
-          text: 'ไม่สามารถโหลดข้อมูลผู้ใช้ได้',
-          confirmButtonText: 'กลับไปหน้าหลัก'
+          icon: "error",
+          title: "เกิดข้อผิดพลาด",
+          text: "ไม่สามารถโหลดข้อมูลผู้ใช้ได้",
+          confirmButtonText: "กลับไปหน้าหลัก",
         }).then(() => {
-          router.push('/admin/users')
-        })
+          router.push("/admin/users");
+        });
       }
     }
 
     if (id) {
-      getUser()
+      getUser();
     }
-  }, [id, router])
+  }, [id, router]);
 
   const validateForm = () => {
-    const newErrors = {}
+    const newErrors = {};
 
-    if (!firstname.trim()) newErrors.firstname = 'กรุณาเลือกคำนำหน้าชื่อ'
-    if (!fullname.trim()) newErrors.fullname = 'กรุณากรอกชื่อ'
-    if (!lastname.trim()) newErrors.lastname = 'กรุณากรอกนามสกุล'
-    if (!username.trim()) newErrors.username = 'กรุณากรอก Username'
-    if (!password.trim()) newErrors.password = 'กรุณากรอกรหัสผ่าน'
-    if (password.length < 6) newErrors.password = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'
-    if (password !== confirmPassword) newErrors.confirmPassword = 'รหัสผ่านไม่ตรงกัน'
-    if (!address.trim()) newErrors.address = 'กรุณากรอกที่อยู่'
-    if (!sex) newErrors.sex = 'กรุณาเลือกเพศ'
-    if (!birthday) newErrors.birthday = 'กรุณาเลือกวันเกิด'
+    if (!firstname.trim()) newErrors.firstname = "กรุณาเลือกคำนำหน้าชื่อ";
+    if (!fullname.trim()) newErrors.fullname = "กรุณากรอกชื่อ";
+    if (!lastname.trim()) newErrors.lastname = "กรุณากรอกนามสกุล";
+    if (!username.trim()) newErrors.username = "กรุณากรอก Username";
+    if (!password.trim()) newErrors.password = "กรุณากรอกรหัสผ่าน";
+    if (password.length < 6)
+      newErrors.password = "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร";
+    if (password !== confirmPassword)
+      newErrors.confirmPassword = "รหัสผ่านไม่ตรงกัน";
+    if (!address.trim()) newErrors.address = "กรุณากรอกที่อยู่";
+    if (!sex) newErrors.sex = "กรุณาเลือกเพศ";
+    if (!birthday) newErrors.birthday = "กรุณาเลือกวันเกิด";
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!validateForm()) {
-      return
+      return;
     }
 
     try {
-      setSubmitting(true)
-      const res = await fetch('https://backend-nextjs-virid.vercel.app/api/users', {
-        method: 'PUT',
+      setSubmitting(true);
+      const res = await fetch(`${API_URL}/api/users`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({
           id,
@@ -106,83 +111,101 @@ export default function EditUserPage({ params }) {
           sex,
           birthday,
         }),
-      })
+      });
 
-      const result = await res.json()
+      const result = await res.json();
 
       if (res.ok) {
         await Swal.fire({
-          icon: 'success',
-          title: 'สำเร็จ!',
-          text: 'อัปเดตข้อมูลผู้ใช้เรียบร้อยแล้ว',
+          icon: "success",
+          title: "สำเร็จ!",
+          text: "อัปเดตข้อมูลผู้ใช้เรียบร้อยแล้ว",
           showConfirmButton: false,
-          timer: 2000
-        })
-        router.push('/admin/users')
+          timer: 2000,
+        });
+        router.push("/admin/users");
       } else {
         Swal.fire({
-          icon: 'error',
-          title: 'เกิดข้อผิดพลาด',
-          text: result.message || 'ไม่สามารถอัปเดตข้อมูลได้',
-        })
+          icon: "error",
+          title: "เกิดข้อผิดพลาด",
+          text: result.message || "ไม่สามารถอัปเดตข้อมูลได้",
+        });
       }
     } catch (err) {
       Swal.fire({
-        icon: 'error',
-        title: 'เกิดข้อผิดพลาด',
-        text: 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้',
-      })
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้",
+      });
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const handleCancel = () => {
     Swal.fire({
-      title: 'ยืนยันการยกเลิก?',
-      text: 'ข้อมูลที่แก้ไขจะไม่ถูกบันทึก',
-      icon: 'question',
+      title: "ยืนยันการยกเลิก?",
+      text: "ข้อมูลที่แก้ไขจะไม่ถูกบันทึก",
+      icon: "question",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ใช่, ยกเลิก',
-      cancelButtonText: 'อยู่ต่อ'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่, ยกเลิก",
+      cancelButtonText: "อยู่ต่อ",
     }).then((result) => {
       if (result.isConfirmed) {
-        router.push('/admin/users')
+        router.push("/admin/users");
       }
-    })
-  }
+    });
+  };
 
   if (loading) {
     return (
-      <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{backgroundColor: '#f8f9fa'}}>
+      <div
+        className="min-vh-100 d-flex align-items-center justify-content-center"
+        style={{ backgroundColor: "#f8f9fa" }}
+      >
         <div className="text-center">
-          <div className="spinner-border text-primary mb-3" style={{width: '3rem', height: '3rem'}} role="status">
+          <div
+            className="spinner-border text-primary mb-3"
+            style={{ width: "3rem", height: "3rem" }}
+            role="status"
+          >
             <span className="visually-hidden">Loading...</span>
           </div>
           <h5 className="text-muted">กำลังโหลดข้อมูล...</h5>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-vh-100" style={{backgroundColor: '#f8f9fa'}}>
+    <div className="min-vh-100" style={{ backgroundColor: "#f8f9fa" }}>
       {/* Header */}
-      <div className="bg-gradient-primary text-white py-4 mb-4" style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+      <div
+        className="bg-gradient-primary text-white py-4 mb-4"
+        style={{
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
+      >
         <div className="container">
           <div className="row align-items-center">
             <div className="col">
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb text-white-50 mb-2">
                   <li className="breadcrumb-item">
-                    <a href="/admin/users" className="text-white-50 text-decoration-none">
+                    <a
+                      href="/admin/users"
+                      className="text-white-50 text-decoration-none"
+                    >
                       <i className="fas fa-users me-1"></i>
                       จัดการผู้ใช้
                     </a>
                   </li>
-                  <li className="breadcrumb-item active text-white" aria-current="page">
+                  <li
+                    className="breadcrumb-item active text-white"
+                    aria-current="page"
+                  >
                     แก้ไขข้อมูล
                   </li>
                 </ol>
@@ -209,7 +232,9 @@ export default function EditUserPage({ params }) {
                       <i className="fas fa-info-circle me-2"></i>
                       ข้อมูลส่วนตัว
                     </h5>
-                    <small className="text-muted">กรอกข้อมูลให้ครบถ้วนและถูกต้อง</small>
+                    <small className="text-muted">
+                      กรอกข้อมูลให้ครบถ้วนและถูกต้อง
+                    </small>
                   </div>
                   <div className="col-auto">
                     <span className="badge bg-primary-subtle text-primary px-3 py-2">
@@ -236,7 +261,7 @@ export default function EditUserPage({ params }) {
                         คำนำหน้าชื่อ <span className="text-danger">*</span>
                       </label>
                       <select
-                        className={`form-select ${errors.firstname ? 'is-invalid' : ''}`}
+                        className={`form-select ${errors.firstname ? "is-invalid" : ""}`}
                         value={firstname}
                         onChange={(e) => setFirstname(e.target.value)}
                         required
@@ -246,7 +271,11 @@ export default function EditUserPage({ params }) {
                         <option value="นาง">นาง</option>
                         <option value="นางสาว">นางสาว</option>
                       </select>
-                      {errors.firstname && <div className="invalid-feedback">{errors.firstname}</div>}
+                      {errors.firstname && (
+                        <div className="invalid-feedback">
+                          {errors.firstname}
+                        </div>
+                      )}
                     </div>
 
                     <div className="col-md-4 mb-3">
@@ -256,13 +285,17 @@ export default function EditUserPage({ params }) {
                       </label>
                       <input
                         type="text"
-                        className={`form-control ${errors.fullname ? 'is-invalid' : ''}`}
+                        className={`form-control ${errors.fullname ? "is-invalid" : ""}`}
                         value={fullname}
                         onChange={(e) => setFullname(e.target.value)}
                         placeholder="กรอกชื่อ"
                         required
                       />
-                      {errors.fullname && <div className="invalid-feedback">{errors.fullname}</div>}
+                      {errors.fullname && (
+                        <div className="invalid-feedback">
+                          {errors.fullname}
+                        </div>
+                      )}
                     </div>
 
                     <div className="col-md-4 mb-3">
@@ -272,13 +305,17 @@ export default function EditUserPage({ params }) {
                       </label>
                       <input
                         type="text"
-                        className={`form-control ${errors.lastname ? 'is-invalid' : ''}`}
+                        className={`form-control ${errors.lastname ? "is-invalid" : ""}`}
                         value={lastname}
                         onChange={(e) => setLastname(e.target.value)}
                         placeholder="กรอกนามสกุล"
                         required
                       />
-                      {errors.lastname && <div className="invalid-feedback">{errors.lastname}</div>}
+                      {errors.lastname && (
+                        <div className="invalid-feedback">
+                          {errors.lastname}
+                        </div>
+                      )}
                     </div>
 
                     <div className="col-md-6 mb-3">
@@ -287,7 +324,7 @@ export default function EditUserPage({ params }) {
                         เพศ <span className="text-danger">*</span>
                       </label>
                       <select
-                        className={`form-select ${errors.sex ? 'is-invalid' : ''}`}
+                        className={`form-select ${errors.sex ? "is-invalid" : ""}`}
                         value={sex}
                         onChange={(e) => setSex(e.target.value)}
                         required
@@ -297,7 +334,9 @@ export default function EditUserPage({ params }) {
                         <option value="หญิง">หญิง</option>
                         <option value="อื่นๆ">อื่นๆ</option>
                       </select>
-                      {errors.sex && <div className="invalid-feedback">{errors.sex}</div>}
+                      {errors.sex && (
+                        <div className="invalid-feedback">{errors.sex}</div>
+                      )}
                     </div>
 
                     <div className="col-md-6 mb-3">
@@ -307,12 +346,16 @@ export default function EditUserPage({ params }) {
                       </label>
                       <input
                         type="date"
-                        className={`form-control ${errors.birthday ? 'is-invalid' : ''}`}
+                        className={`form-control ${errors.birthday ? "is-invalid" : ""}`}
                         value={birthday}
                         onChange={(e) => setBirthday(e.target.value)}
                         required
                       />
-                      {errors.birthday && <div className="invalid-feedback">{errors.birthday}</div>}
+                      {errors.birthday && (
+                        <div className="invalid-feedback">
+                          {errors.birthday}
+                        </div>
+                      )}
                     </div>
 
                     <div className="col-12 mb-4">
@@ -321,14 +364,16 @@ export default function EditUserPage({ params }) {
                         ที่อยู่ <span className="text-danger">*</span>
                       </label>
                       <textarea
-                        className={`form-control ${errors.address ? 'is-invalid' : ''}`}
+                        className={`form-control ${errors.address ? "is-invalid" : ""}`}
                         rows={3}
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         placeholder="กรอกที่อยู่ปัจจุบัน"
                         required
                       />
-                      {errors.address && <div className="invalid-feedback">{errors.address}</div>}
+                      {errors.address && (
+                        <div className="invalid-feedback">{errors.address}</div>
+                      )}
                     </div>
 
                     {/* Account Information Section */}
@@ -346,13 +391,17 @@ export default function EditUserPage({ params }) {
                       </label>
                       <input
                         type="text"
-                        className={`form-control ${errors.username ? 'is-invalid' : ''}`}
+                        className={`form-control ${errors.username ? "is-invalid" : ""}`}
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         placeholder="กรอก Username"
                         required
                       />
-                      {errors.username && <div className="invalid-feedback">{errors.username}</div>}
+                      {errors.username && (
+                        <div className="invalid-feedback">
+                          {errors.username}
+                        </div>
+                      )}
                     </div>
 
                     <div className="col-md-6 mb-3">
@@ -362,14 +411,20 @@ export default function EditUserPage({ params }) {
                       </label>
                       <input
                         type="password"
-                        className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                        className={`form-control ${errors.password ? "is-invalid" : ""}`}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="กรอกรหัสผ่าน"
                         required
                       />
-                      {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-                      <div className="form-text">รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร</div>
+                      {errors.password && (
+                        <div className="invalid-feedback">
+                          {errors.password}
+                        </div>
+                      )}
+                      <div className="form-text">
+                        รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร
+                      </div>
                     </div>
 
                     <div className="col-md-6 mb-4">
@@ -379,13 +434,17 @@ export default function EditUserPage({ params }) {
                       </label>
                       <input
                         type="password"
-                        className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                        className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="กรอกรหัสผ่านอีกครั้ง"
                         required
                       />
-                      {errors.confirmPassword && <div className="invalid-feedback">{errors.confirmPassword}</div>}
+                      {errors.confirmPassword && (
+                        <div className="invalid-feedback">
+                          {errors.confirmPassword}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </form>
@@ -394,7 +453,7 @@ export default function EditUserPage({ params }) {
               <div className="card-footer bg-light border-top py-4">
                 <div className="row">
                   <div className="col-md-6">
-                    <button 
+                    <button
                       type="button"
                       className="btn btn-outline-secondary btn-lg w-100"
                       onClick={handleCancel}
@@ -405,7 +464,7 @@ export default function EditUserPage({ params }) {
                     </button>
                   </div>
                   <div className="col-md-6">
-                    <button 
+                    <button
                       type="submit"
                       className="btn btn-primary btn-lg w-100"
                       onClick={handleSubmit}
@@ -413,7 +472,10 @@ export default function EditUserPage({ params }) {
                     >
                       {submitting ? (
                         <>
-                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                          <span
+                            className="spinner-border spinner-border-sm me-2"
+                            role="status"
+                          ></span>
                           กำลังบันทึก...
                         </>
                       ) : (
@@ -431,5 +493,5 @@ export default function EditUserPage({ params }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
