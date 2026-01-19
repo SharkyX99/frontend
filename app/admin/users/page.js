@@ -25,7 +25,11 @@ export default function UserManagement() {
     async function getUsers() {
       try {
         setError(null);
-        const res = await fetch(`${API_URL}/api/users`);
+        const res = await fetch(`${API_URL}/api/users`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!res.ok) throw new Error("Failed to fetch data");
         const data = await res.json();
         setItems(data);
@@ -72,7 +76,10 @@ export default function UserManagement() {
         setDeleting(id);
         const response = await fetch(`${API_URL}/api/users/${id}`, {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await response.json();
 
