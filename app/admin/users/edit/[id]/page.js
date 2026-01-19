@@ -30,7 +30,6 @@ export default function EditUserPage({ params }) {
       try {
         setLoading(true);
         const res = await fetch(`${API_URL}/api/users/${id}`, {
-        const res = await fetch(`${API_URL}/api/users/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token") || sessionStorage.getItem("token")}`,
           },
