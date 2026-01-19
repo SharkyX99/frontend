@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const { user, isAdmin, setUser } = useAuth();
@@ -239,19 +240,24 @@ export default function Navigation() {
                   </Link>
                 </>
               ) : (
-                <div className="dropdown">
+                <div className="dropdown position-relative">
                   <button
                     className="glass-btn dropdown-toggle"
                     type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    style={{ color: getLinkColor() }}
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
                   >
                     👋 {user.name || "ผู้ใช้งาน"}
                   </button>
-                  <ul className="dropdown-menu">
+                  <ul
+                    className={`dropdown-menu ${dropdownOpen ? "show" : ""}`}
+                    style={{ right: 0, left: "auto" }}
+                  >
                     <li>
-                      <Link className="dropdown-item" href="/profile">
+                      <Link
+                        className="dropdown-item"
+                        href="/profile"
+                        onClick={() => setDropdownOpen(false)}
+                      >
                         👤 ข้อมูลส่วนตัว
                       </Link>
                     </li>
@@ -261,7 +267,10 @@ export default function Navigation() {
                     <li>
                       <button
                         className="dropdown-item text-danger"
-                        onClick={handleSignOut}
+                        onClick={() => {
+                          handleSignOut();
+                          setDropdownOpen(false);
+                        }}
                       >
                         🚪 ออกจากระบบ
                       </button>
