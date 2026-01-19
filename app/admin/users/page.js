@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://011-backend.vercel.app";
+const API_URL = "https://011-backend.vercel.app";
 
 export default function UserManagement() {
   const [items, setItems] = useState([]);
