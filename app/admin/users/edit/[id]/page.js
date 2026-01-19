@@ -30,8 +30,9 @@ export default function EditUserPage({ params }) {
       try {
         setLoading(true);
         const res = await fetch(`${API_URL}/api/users/${id}`, {
+        const res = await fetch(`${API_URL}/api/users/${id}`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token") || sessionStorage.getItem("token")}`,
           },
         });
         if (!res.ok) throw new Error("Failed to fetch user data");
@@ -102,7 +103,7 @@ export default function EditUserPage({ params }) {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token") || sessionStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           id,

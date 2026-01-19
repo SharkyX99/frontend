@@ -1,66 +1,68 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { useAuth } from "../context/AuthContext"
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+"use client";
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Navigation() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [activeSection, setActiveSection] = useState('home')
-  const { user, isAdmin, setUser } = useAuth()
-  const pathname = usePathname()
-  const router = useRouter()
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const { user, isAdmin, setUser } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
 
-  const blackTextPages = ['/contact']
+  const blackTextPages = ["/contact"];
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY
-      setScrolled(scrollTop > 50)
+      const scrollTop = window.scrollY;
+      setScrolled(scrollTop > 50);
 
-      const sections = ['home', 'about', 'service', 'contact']
-      sections.forEach(section => {
-        const element = document.getElementById(section)
+      const sections = ["home", "about", "service", "contact"];
+      sections.forEach((section) => {
+        const element = document.getElementById(section);
         if (element) {
-          const rect = element.getBoundingClientRect()
+          const rect = element.getBoundingClientRect();
           if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section)
+            setActiveSection(section);
           }
         }
-      })
-    }
+      });
+    };
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  // ✅ ฟังก์ชันออกจากระบบ
   const handleSignOut = () => {
-    localStorage.removeItem("token")
-    setUser(null)
-    router.push("/login")
-  }
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
+    sessionStorage.clear();
+    setUser(null);
+    router.push("/login"); // หรือ /signin ตามที่ใช้จริง
+  };
 
   const navLinks = [
-    { href: '/', label: 'Home', icon: '🏠' },
-    { href: '/about', label: 'About', icon: '👤' },
-    { href: '/service', label: 'Service', icon: '🛠️' },
-    { href: '/contact', label: 'Contact', icon: '📞' }
-  ]
+    { href: "/", label: "Home", icon: "🏠" },
+    { href: "/about", label: "About", icon: "👤" },
+    { href: "/service", label: "Service", icon: "🛠️" },
+    { href: "/contact", label: "Contact", icon: "📞" },
+  ];
 
   const getLinkColor = () => {
-    if (scrolled) return '#000'
-    if (blackTextPages.includes(pathname)) return '#000'
-    if (pathname === '/') return '#fff'
-    return '#000'
-  }
+    if (scrolled) return "#000";
+    if (blackTextPages.includes(pathname)) return "#000";
+    if (pathname === "/") return "#fff";
+    return "#000";
+  };
 
   return (
     <>
       <style jsx>{`
         .glass-nav {
-          position: fixed;   /* ✅ sticky */
+          position: fixed; /* ✅ sticky */
           top: 0;
           left: 0;
           width: 100%;
@@ -112,7 +114,7 @@ export default function Navigation() {
           gap: 0.5rem;
           font-size: 0.9rem;
           transition: all 0.3s ease;
-          background: rgba(255,255,255,0.2);
+          background: rgba(255, 255, 255, 0.2);
           backdrop-filter: blur(10px);
           border: none;
         }
@@ -123,13 +125,19 @@ export default function Navigation() {
           -webkit-backdrop-filter: blur(20px);
           border: 1px solid rgba(255, 255, 255, 0.3);
           border-radius: 15px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
           animation: slideDown 0.3s ease-out;
         }
 
         @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         .hamburger span {
@@ -142,15 +150,27 @@ export default function Navigation() {
           transition: 0.3s;
         }
 
-        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-        .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+        .hamburger.open span:nth-child(1) {
+          transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.open span:nth-child(2) {
+          opacity: 0;
+        }
+        .hamburger.open span:nth-child(3) {
+          transform: rotate(-45deg) translate(6px, -6px);
+        }
       `}</style>
 
-      <nav className={`navbar navbar-expand-lg glass-nav ${scrolled ? 'scrolled' : ''}`}>
+      <nav
+        className={`navbar navbar-expand-lg glass-nav ${scrolled ? "scrolled" : ""}`}
+      >
         <div className="container">
           {/* Brand */}
-          <Link href="/" className="navbar-brand brand-logo" style={{ color: getLinkColor() }}>
+          <Link
+            href="/"
+            className="navbar-brand brand-logo"
+            style={{ color: getLinkColor() }}
+          >
             Thuchy
           </Link>
 
@@ -160,8 +180,13 @@ export default function Navigation() {
             type="button"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <div className={`hamburger ${isOpen ? 'open' : ''}`} style={{ color: getLinkColor() }}>
-              <span></span><span></span><span></span>
+            <div
+              className={`hamburger ${isOpen ? "open" : ""}`}
+              style={{ color: getLinkColor() }}
+            >
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
           </button>
 
@@ -172,8 +197,8 @@ export default function Navigation() {
                 <li key={link.href} className="nav-item mx-2">
                   <Link
                     href={link.href}
-                    className={`nav-link ${activeSection === link.href.substring(1) ? 'active' : ''}`}
-                    style={{ color: getLinkColor(), transition: 'color 0.3s' }}
+                    className={`nav-link ${activeSection === link.href.substring(1) ? "active" : ""}`}
+                    style={{ color: getLinkColor(), transition: "color 0.3s" }}
                   >
                     <span className="btn-icon">{link.icon}</span>
                     {link.label}
@@ -183,7 +208,11 @@ export default function Navigation() {
 
               {user && isAdmin && (
                 <li className="nav-item mx-2">
-                  <Link href="/admin" className="nav-link" style={{ color: getLinkColor() }}>
+                  <Link
+                    href="/admin"
+                    className="nav-link"
+                    style={{ color: getLinkColor() }}
+                  >
                     ⚙️ Admin
                   </Link>
                 </li>
@@ -194,10 +223,18 @@ export default function Navigation() {
             <div className="d-flex align-items-center gap-3">
               {!user ? (
                 <>
-                  <Link href="/login" className="glass-btn" style={{ color: getLinkColor() }}>
+                  <Link
+                    href="/login"
+                    className="glass-btn"
+                    style={{ color: getLinkColor() }}
+                  >
                     🔑 Login
                   </Link>
-                  <Link href="/register" className="glass-btn" style={{ color: getLinkColor() }}>
+                  <Link
+                    href="/register"
+                    className="glass-btn"
+                    style={{ color: getLinkColor() }}
+                  >
                     📝 Register
                   </Link>
                 </>
@@ -210,7 +247,7 @@ export default function Navigation() {
                     aria-expanded="false"
                     style={{ color: getLinkColor() }}
                   >
-                    👋 {user.name || 'ผู้ใช้งาน'}
+                    👋 {user.name || "ผู้ใช้งาน"}
                   </button>
                   <ul className="dropdown-menu">
                     <li>
@@ -218,9 +255,14 @@ export default function Navigation() {
                         👤 ข้อมูลส่วนตัว
                       </Link>
                     </li>
-                    <li><hr className="dropdown-divider" /></li>
                     <li>
-                      <button className="dropdown-item text-danger" onClick={handleSignOut}>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <button
+                        className="dropdown-item text-danger"
+                        onClick={handleSignOut}
+                      >
                         🚪 ออกจากระบบ
                       </button>
                     </li>
@@ -239,7 +281,7 @@ export default function Navigation() {
                     key={link.href}
                     href={link.href}
                     className="nav-link"
-                    style={{ color: '#000' }}
+                    style={{ color: "#000" }}
                     onClick={() => setIsOpen(false)}
                   >
                     {link.label}
@@ -249,7 +291,7 @@ export default function Navigation() {
                   <Link
                     href="/admin"
                     className="nav-link text-center"
-                    style={{ color: '#000' }}
+                    style={{ color: "#000" }}
                     onClick={() => setIsOpen(false)}
                   >
                     ⚙️ Admin
@@ -258,7 +300,10 @@ export default function Navigation() {
                 {user && (
                   <button
                     className="glass-btn text-center"
-                    onClick={() => { handleSignOut(); setIsOpen(false) }}
+                    onClick={() => {
+                      handleSignOut();
+                      setIsOpen(false);
+                    }}
                   >
                     🚪 ออกจากระบบ
                   </button>
@@ -269,5 +314,5 @@ export default function Navigation() {
         </div>
       </nav>
     </>
-  )
+  );
 }

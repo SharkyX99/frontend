@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -30,7 +31,16 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (data.token) {
-        localStorage.setItem("token", data.token);
+        if (rememberMe) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("role", data.role);
+          localStorage.setItem("username", username);
+        } else {
+          sessionStorage.setItem("token", data.token);
+          sessionStorage.setItem("role", data.role);
+          sessionStorage.setItem("username", username);
+        }
+
         Swal.fire({
           icon: "success",
           title: "<h3>เข้าสู่ระบบสำเร็จ!</h3>",
@@ -217,6 +227,23 @@ export default function LoginPage() {
                       >
                         {isLoading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
                       </button>
+                    </div>
+
+                    {/* Remember Me Checkbox */}
+                    <div className="mb-4 form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id="rememberMe"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                      />
+                      <label
+                        className="form-check-label text-dark"
+                        htmlFor="rememberMe"
+                      >
+                        จดจำฉัน
+                      </label>
                     </div>
                   </form>
                 </div>

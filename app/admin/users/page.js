@@ -15,7 +15,7 @@ export default function UserManagement() {
   const router = useRouter();
 
   useEffect(() => {
-    const t = localStorage.getItem("token");
+    const t = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!t) {
       router.push("/signin");
       return;
