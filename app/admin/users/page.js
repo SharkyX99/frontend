@@ -30,7 +30,10 @@ export default function UserManagement() {
             Authorization: `Bearer ${token}`,
           },
         });
-        if (!res.ok) throw new Error("Failed to fetch data");
+        if (!res.ok)
+          throw new Error(
+            `Failed to fetch data: ${res.status} ${res.statusText}`,
+          );
         const data = await res.json();
         setItems(data);
         setLoading(false);
