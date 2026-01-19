@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { useAuth } from "../context/AuthContext";
 
 const API_URL = "https://011-backend.vercel.app";
 
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
+  const { setUser } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,14 +43,19 @@ export default function LoginPage() {
           sessionStorage.setItem("username", username);
         }
 
+        // Update Context
+        setUser({
+          username: username,
+          role: data.role,
+        });
+
         Swal.fire({
           icon: "success",
           title: "<h3>เข้าสู่ระบบสำเร็จ!</h3>",
           showConfirmButton: false,
           timer: 2000,
         }).then(() => {
-          // ใช้ window.location.href เพื่อ reload state ของ app
-          window.location.href = "/admin/users";
+          router.push("/admin/users");
         });
       } else {
         Swal.fire({
