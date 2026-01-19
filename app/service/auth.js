@@ -1,5 +1,5 @@
 // service/auth.js
-const API_URL = "http://localhost:3102"; // เปลี่ยนเป็น localhost สำหรับการเทส
+const API_URL = "https://011-backend.vercel.app";
 
 // 1. ฟังก์ชัน Login (ของเดิมที่คุณมี)
 export const loginUser = async (username, password) => {

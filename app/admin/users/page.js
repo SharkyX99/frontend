@@ -17,7 +17,7 @@ export default function UserManagement() {
   useEffect(() => {
     const t = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!t) {
-      router.push("/signin");
+      router.push("/login");
       return;
     }
     setToken(t);
@@ -49,7 +49,7 @@ export default function UserManagement() {
   const handleSignOut = () => {
     localStorage.removeItem("token");
     setToken(null);
-    router.push("/signin");
+    router.push("/login");
   };
 
   const handleDelete = async (id, name) => {

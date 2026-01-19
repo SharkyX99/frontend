@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { loginUser } from "../service/auth"; // เรียกใช้ service ตามโค้ดชุดแรก
+import { loginUser } from "../service/auth";
+import { useAuth } from "../context/AuthContext"; // Import useAuth
 
 export default function LoginPage() {
   // --- State สำหรับ Logic และ UI ---
@@ -13,12 +14,12 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
+  const { login } = useAuth(); // Destructure login function
 
   // --- ตรวจสอบว่า Login อยู่แล้วหรือยัง ---
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      // ถ้ามี token แล้ว ให้เด้งไปหน้า Dashboard เลย
       router.push("/");
     }
   }, [router]);
@@ -36,8 +37,14 @@ export default function LoginPage() {
       const result = await loginUser(username, password);
 
       if (result.ok) {
-        // ตรวจสอบ Role เพื่อ Redirect
-        const role = result.data?.role || localStorage.getItem("role");
+        // ตรวจสอบ Role เพื่อ Redirect (User แจ้งว่าใช้ field status)
+        const role =
+          result.data?.role ||
+          result.data?.status ||
+          localStorage.getItem("role");
+
+        // Update Context State
+        login(result.data);
 
         if (role === "admin") {
           router.push("/admin/users");
@@ -361,8 +368,8 @@ export default function LoginPage() {
                         }}
                         onClick={() => {
                           // Auto-fill สำหรับ Demo
-                          setUsername("admin");
-                          setPassword("password123");
+                          setUsername("2");
+                          setPassword("123123");
                         }}
                       >
                         <i className="fas fa-user-shield me-2"></i>
