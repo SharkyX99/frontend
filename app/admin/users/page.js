@@ -45,8 +45,7 @@ export default function UserManagement() {
     }
 
     getUsers();
-    const interval = setInterval(getUsers, 5000); // auto-refresh
-    return () => clearInterval(interval);
+
   }, [router]);
 
   const handleSignOut = () => {
